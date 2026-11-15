@@ -1,0 +1,3812 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nền Tảng Dạy Học Số - Toán 9: Bài 16 (Tiếp Tuyến Đường Tròn & Hệ Thống An Ninh)</title>
+  <style>
+    /* BẢNG MÀU SÁNG TRANG NHÃ - CHUẨN GIÁO DỤC HIỆN ĐẠI (EYE-COMFORT LIGHT PALETTE) - MẶC ĐỊNH */
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-sub: #f1f5f9;
+      --card-border: #cbd5e1;
+      --card-border-sub: #e2e8f0;
+      --header-bg: #ffffff;
+      --nav-bg: #e2e8f0;
+      --primary: #0284c7;
+      --primary-soft: #0369a1;
+      --secondary: #0ea5e9;
+      --accent: #d97706;
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.12);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.12);
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --canvas-bg: #f8fafc;
+      --canvas-hud-bg: rgba(255, 255, 255, 0.92);
+      --box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    /* GIAO DIỆN TỐI (KHI BẬT THEME TỐI) */
+    body.dark-theme {
+      --bg: #141b2d;
+      --card-bg: #1c263c;
+      --card-sub: #172033;
+      --card-border: #2c3a57;
+      --card-border-sub: #233149;
+      --header-bg: #172035;
+      --nav-bg: #121929;
+      --primary: #2563eb;
+      --primary-soft: #38bdf8;
+      --secondary: #0ea5e9;
+      --accent: #f59e0b;
+      --danger: #f43f5e;
+      --danger-soft: rgba(244, 63, 94, 0.16);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.16);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --canvas-bg: radial-gradient(#18243b 20%, #121929 80%);
+      --canvas-hud-bg: rgba(20, 27, 45, 0.88);
+      --box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    /* TOP HEADER */
+    header {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--box-shadow);
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #0284c7, #4f46e5);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .brand-text h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.2px;
+    }
+
+    .brand-text p {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    /* MAIN TABS */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--nav-bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover { color: var(--text); background: rgba(0,0,0,0.04); }
+    body.dark-theme .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(2,132,199,0.35);
+    }
+
+    .btn {
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-success { background: var(--success); color: white; }
+    .btn-success:hover { opacity: 0.9; }
+    .btn-warning { background: var(--accent); color: white; }
+    .btn-warning:hover { opacity: 0.9; }
+    .btn-outline { background: var(--card-bg); border-color: var(--card-border); color: var(--text); }
+    .btn-outline:hover { background: var(--card-sub); border-color: var(--primary); color: var(--primary); }
+
+    /* VIEW CONTENT */
+    .view-content {
+      display: none;
+      flex: 1;
+      padding: 20px 24px;
+      max-width: 1650px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .view-content.active { display: block; }
+
+    /* TAB 1: OVERVIEW */
+    .overview-hero {
+      background: linear-gradient(135deg, var(--card-bg), var(--card-sub));
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 30px 34px;
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 30px;
+      align-items: center;
+      box-shadow: var(--box-shadow);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(2, 132, 199, 0.12);
+      color: var(--primary);
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .overview-hero h2 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .overview-hero p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .brief-card {
+      background: var(--card-sub);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      border-left: 4px solid var(--accent);
+    }
+
+    .two-period-flow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .period-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--box-shadow);
+    }
+
+    /* TAB 2 & 3: LAB LAYOUT */
+    .theory-lab-layout, .lab-layout {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 18px;
+      height: calc(100vh - 105px);
+    }
+
+    @media (max-width: 1100px) {
+      .theory-lab-layout, .lab-layout { grid-template-columns: 1fr; height: auto; }
+    }
+
+    .canvas-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--box-shadow);
+    }
+
+    .sub-step-nav, .expert-bar {
+      background: var(--card-sub);
+      border-bottom: 1px solid var(--card-border);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .step-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-btn:hover { color: var(--text); background: var(--card-sub); }
+    .step-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .role-pills { display: flex; gap: 6px; }
+
+    .role-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .role-btn:hover { background: var(--card-sub); color: var(--text); }
+    .role-btn.active.role-1 { background: #0284c7; border-color: #0284c7; color: #fff; }
+    .role-btn.active.role-2 { background: #059669; border-color: #059669; color: #fff; }
+    .role-btn.active.role-3 { background: #d97706; border-color: #d97706; color: #fff; }
+
+    /* TOOLBAR KHO THIẾT BỊ CAMERA - KÉO THẢ */
+    .camera-toolbox {
+      background: var(--card-sub);
+      border-bottom: 1px solid var(--card-border);
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .cam-drag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--card-bg);
+      border: 1.5px dashed var(--primary);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.77rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: grab;
+      user-select: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .cam-drag-item:hover {
+      background: var(--card-sub);
+      border-color: #0284c7;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
+    .cam-drag-item:active {
+      cursor: grabbing;
+      transform: scale(0.97);
+    }
+    .cam-drag-item.deployed {
+      background: rgba(2, 132, 199, 0.12);
+      border-style: solid;
+      border-color: #0284c7;
+      color: #0284c7;
+    }
+    .cam-drag-item.role-2-item {
+      border-color: #059669;
+    }
+    .cam-drag-item.role-2-item.deployed {
+      background: rgba(16, 185, 129, 0.12);
+      border-style: solid;
+      border-color: #059669;
+      color: #059669;
+    }
+
+    .cam-dock-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-cam1 { background: #0284c7; box-shadow: 0 0 6px rgba(2, 132, 199, 0.6); }
+    .dot-cam2 { background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); }
+
+    .canvas-wrapper.drag-over {
+      outline: 2px dashed #0284c7;
+      outline-offset: -4px;
+    }
+
+    /* KHÔNG GIAN CANVAS SÁNG SỦA, DỊU MẮT */
+    .canvas-wrapper {
+      flex: 1;
+      position: relative;
+      background: var(--canvas-bg);
+      min-height: 480px;
+      overflow: hidden;
+    }
+
+    canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
+
+    .canvas-hud {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      background: var(--canvas-hud-bg);
+      backdrop-filter: blur(5px);
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      max-width: 330px;
+      color: var(--text);
+      box-shadow: var(--box-shadow);
+    }
+
+    /* RIGHT SIDEBAR */
+    .task-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+    }
+
+    .task-header {
+      background: var(--card-sub);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text);
+    }
+
+    .task-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .def-box {
+      background: var(--card-sub);
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 14px;
+      font-size: 0.83rem;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .mission-box {
+      background: var(--card-sub);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+    }
+
+    .metrics-grid {
+      background: var(--card-sub);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 8px 0;
+    }
+
+    .metric-item { font-size: 0.75rem; color: var(--text-muted); }
+    .metric-val { font-size: 1rem; font-weight: 800; color: var(--text); font-family: monospace; }
+
+    .target-status-box {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* TAB 4: PRESENTATION */
+    .studio-container {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 22px;
+    }
+    @media (max-width: 950px) { .studio-container { grid-template-columns: 1fr; } }
+
+    .report-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .report-header {
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text);
+    }
+
+    .input-group { display: flex; flex-direction: column; gap: 5px; }
+    .input-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+    .input-field {
+      background: var(--card-sub);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .snapshot-box {
+      background: var(--card-sub);
+      border: 2px dashed var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      min-height: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .snapshot-img { max-width: 100%; max-height: 260px; border-radius: 6px; border: 1px solid var(--card-border); }
+
+    /* MODAL */
+    .mission-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .mission-dispatch-card {
+      background: var(--card-bg);
+      border: 1px solid var(--primary);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 660px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .dispatch-header {
+      background: var(--card-sub);
+      padding: 14px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .dispatch-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+
+    .dispatch-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 12px; color: var(--text); }
+    .dispatch-meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      background: var(--card-sub); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px 12px; font-size: 0.8rem;
+    }
+    .dispatch-section { background: var(--card-sub); border: 1px solid var(--card-border); border-left: 4px solid var(--primary); padding: 10px 12px; border-radius: 0 6px 6px 0; font-size: 0.84rem; }
+    .dispatch-tasks { display: flex; flex-direction: column; gap: 8px; }
+    .dispatch-task-item { display: flex; gap: 10px; align-items: flex-start; background: var(--card-sub); border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; }
+    .task-bullet { width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .dispatch-footer { background: var(--card-sub); border-top: 1px solid var(--card-border); padding: 12px 24px; display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* FULLSCREEN PRESENTATION */
+    .presentation-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      padding: 24px 36px;
+    }
+    .pres-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 12px; margin-bottom: 18px; color: #fff; }
+    .pres-body { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: center; }
+    .pres-slide { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 22px; height: 100%; display: flex; flex-direction: column; justify-content: center; color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER NAVIGATION (ĐÃ LOẠI BỎ HẲN CÁC HUY HIỆU "TIẾT 1", "TIẾT 2" THÔ CỨNG) -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🏛️</div>
+      <div class="brand-text">
+        <h1>HỆ THỐNG DẠY HỌC SỐ: TIẾP TUYẾN ĐƯỜNG TRÒN & AN NINH</h1>
+        <p>Môn Toán 9 – Bài 16: Vị trí tương đối của đường thẳng và đường tròn</p>
+      </div>
+    </div>
+
+    <!-- MAIN TABS GỌN GÀNG, DỊU MẮT -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" data-tab="tabOverview">
+        <span>📌 Giới Thiệu Dự Án</span>
+      </button>
+      <button class="tab-btn" data-tab="tabPeriod1">
+        <span>📖 Khám Phá Kiến Thức</span>
+      </button>
+      <button class="tab-btn" data-tab="tabWorkspace">
+        <span>🔬 Thực Hành Chuyên Gia</span>
+      </button>
+      <button class="tab-btn" data-tab="tabPresentation">
+        <span>📊 Báo Cáo & Tranh Biện</span>
+      </button>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="btn btn-outline" id="btnToggleTheme" style="font-size:0.78rem; padding:6px 12px; display:inline-flex; align-items:center; gap:5px;" title="Chuyển đổi giao diện Sáng / Tối">
+        <span id="themeIcon">☀️</span> <span id="themeText">Giao diện Sáng</span>
+      </button>
+      <button class="btn btn-outline" id="btnOpenMissionModal" style="font-size:0.78rem; padding:6px 12px;">
+        📜 Xem Lệnh Nhiệm Vụ
+      </button>
+    </div>
+  </header>
+
+  <!-- TAB 1: OVERVIEW HERO -->
+  <div class="view-content active" id="tabOverview">
+    <div class="overview-hero">
+      <div>
+        <span class="hero-tag">Dự Án An Ninh Bảo Tàng Mỹ Thuật</span>
+        <h2>VỤ ÁN "GÓC KHUẤT BẢO TÀNG" & TIẾN TRÌNH HỌC TẬP TÍCH CỰC</h2>
+        <p>
+          Sảnh trung tâm có một cột bê tông tròn lớn. Kẻ gian đã nấp sau cột tròn để đột nhập. 
+          Để giải quyết triệt để bài toán này, học sinh sẽ làm chủ kiến thức <b>Bài 16</b> và nhập vai các đội <b>Kỹ sư an ninh số</b>:
+        </p>
+        <div style="display:flex; gap:12px; margin-top:14px;">
+          <button class="btn btn-primary" onclick="switchTab('tabPeriod1')" style="font-size:0.88rem; padding:10px 18px;">
+            📖 Khám Phá Kiến Thức Nền ➔
+          </button>
+          <button class="btn btn-outline" onclick="switchTab('tabWorkspace')" style="font-size:0.88rem; padding:10px 18px;">
+            🔬 Thực Hành 3 Nhóm Chuyên Gia ➔
+          </button>
+        </div>
+      </div>
+
+      <div class="brief-card">
+        <div style="font-weight:700; color:var(--accent); margin-bottom:6px; font-size:0.9rem;">⚡ CẤU TRÚC TIẾN TRÌNH SƯ PHẠM:</div>
+        <div style="font-size:0.83rem; color:#cbd5e1; line-height:1.6;">
+          • <b>Giai đoạn 1 (Khám phá):</b> Toàn bộ học sinh cùng thao tác thí nghiệm số để hình thành <b>kiến thức cốt lõi Bài 16</b> (3 vị trí tương đối, Định lí 1 tiếp tuyến, Định lí 2 tính chất hai tiếp tuyến cắt nhau).<br><br>
+          • <b>Giai đoạn 2 (Vận dụng):</b> Chia lớp thành <b>3 Nhóm Chuyên gia</b>, nhận Lệnh điều phối nhiệm vụ thực tế, tối ưu hóa hệ thống an ninh và tranh biện bảo vệ phương án trước Hội đồng.
+        </div>
+      </div>
+    </div>
+
+    <div class="two-period-flow">
+      <div class="period-card" style="border-top:3px solid var(--primary);">
+        <h3 style="font-size:1.05rem; color:var(--text); margin-bottom:8px;">1. Chiếm Lĩnh Kiến Thức Bài 16 Bằng Mô Phỏng</h3>
+        <p style="font-size:0.83rem; color:var(--text-muted); line-height:1.55; margin-bottom:14px;">
+          Học sinh tự kéo đường thẳng khảo sát số điểm chung (d so với R), phát hiện góc vuông tiếp tuyến OA ⊥ MA (Định lí 1) và tính chất đối xứng hai tiếp tuyến MA = MB, tia phân giác MO (Định lí 2).
+        </p>
+        <button class="btn btn-outline" onclick="switchTab('tabPeriod1')">Bắt đầu khám phá ➔</button>
+      </div>
+
+      <div class="period-card" style="border-top:3px solid var(--accent);">
+        <h3 style="font-size:1.05rem; color:var(--text); margin-bottom:8px;">2. Thực Hành 3 Nhóm Chuyên Gia & Tranh Biện</h3>
+        <p style="font-size:0.83rem; color:var(--text-muted); line-height:1.55; margin-bottom:14px;">
+          Lớp chia thành 3 Nhóm: <b>Nhóm 1</b> (Độ phủ 100% - 2 camera), <b>Nhóm 2</b> (Tiết kiệm ngân sách - 1 camera dải hẹp 2R), <b>Nhóm 3</b> (Bảo vệ Viên kim cương K - đường nhìn không cắt cột).
+        </p>
+        <button class="btn btn-warning" onclick="switchTab('tabWorkspace')">Nhận nhiệm vụ chuyên gia ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: KHÁM PHÁ KIẾN THỨC BÀI 16 -->
+  <div class="view-content" id="tabPeriod1">
+    <div class="theory-lab-layout">
+      
+      <!-- LEFT CANVAS: PERIOD 1 -->
+      <div class="canvas-card">
+        <div class="sub-step-nav">
+          <button class="step-btn active" id="btnStep1" onclick="setPeriod1Step(1)">
+            1. Ba vị trí tương đối (d & R)
+          </button>
+          <button class="step-btn" id="btnStep2" onclick="setPeriod1Step(2)">
+            2. Định lí 1: Dấu hiệu Tiếp tuyến
+          </button>
+          <button class="step-btn" id="btnStep3" onclick="setPeriod1Step(3)">
+            3. Định lí 2: Hai tiếp tuyến cắt nhau
+          </button>
+        </div>
+
+        <!-- THANH CÔNG CỤ HÌNH HỌC KHÁM PHÁ (VẼ ĐƯỜNG TRÒN, ĐƯỜNG THẲNG & TÙY CHỌN KÍCH THƯỚC) -->
+        <div class="camera-toolbox" id="geometryToolboxP1" style="background:var(--card-sub); border-bottom:1px solid var(--card-border); padding:8px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">
+              🧰 Công cụ vẽ:
+            </span>
+
+            <!-- Tool: Circle (O, R) -->
+            <div class="cam-drag-item" id="p1DragItemCircle" draggable="true" onclick="deployP1Element('circle')" title="Nhấp hoặc kéo thả để vẽ Đường tròn (O) lên bảng vẽ">
+              <span style="font-size:1.05rem; line-height:1;">⭕</span>
+              <span class="cam-dock-label" id="p1DockLabelCircle">Vẽ Đường tròn (O)</span>
+            </div>
+
+            <!-- Tool: Line a -->
+            <div class="cam-drag-item" id="p1DragItemLine1" draggable="true" onclick="deployP1Element('line1')" title="Nhấp hoặc kéo thả để vẽ Đường thẳng a lên bảng vẽ">
+              <span style="font-size:1.05rem; line-height:1; color:#0284c7;">📏</span>
+              <span class="cam-dock-label" id="p1DockLabelLine1">Vẽ Đường thẳng a</span>
+            </div>
+
+            <!-- Tool: Line b -->
+            <div class="cam-drag-item" id="p1DragItemLine2" draggable="true" onclick="deployP1Element('line2')" title="Nhấp hoặc kéo thả để vẽ Đường thẳng b (Tiếp tuyến 2)">
+              <span style="font-size:1.05rem; line-height:1; color:#059669;">📐</span>
+              <span class="cam-dock-label" id="p1DockLabelLine2">Đường thẳng b (Tiếp tuyến 2)</span>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <!-- Tùy chọn kích thước bán kính R -->
+            <div style="display:flex; align-items:center; gap:5px; background:var(--card-bg); padding:3px 8px; border-radius:6px; border:1px solid var(--card-border);">
+              <label for="p1RadiusInput" style="font-size:0.74rem; font-weight:700; color:var(--text); white-space:nowrap;">
+                Kích thước R:
+              </label>
+              <input type="number" id="p1RadiusInput" min="25" max="110" step="5" value="50" style="width:48px; text-align:center; font-weight:700; font-size:0.75rem; border:1px solid var(--card-border); border-radius:4px; background:var(--input-bg); color:var(--text); padding:2px;" oninput="setP1Radius(this.value)">
+              <span style="font-size:0.72rem; color:var(--text-muted);">cm</span>
+              <input type="range" id="p1RadiusSlider" min="25" max="110" step="1" value="50" style="width:65px; cursor:pointer;" oninput="setP1Radius(this.value)">
+            </div>
+
+            <button class="btn btn-outline" id="btnRecallP1" onclick="recallP1Elements()" style="padding:4px 9px; font-size:0.72rem;" title="Xóa toàn bộ hình trên bảng vẽ để thực hành vẽ lại">
+              🗑️ Xóa hình (Vẽ lại)
+            </button>
+
+            <button class="btn btn-outline" id="btnSampleP1" onclick="quickSampleP1()" style="padding:4px 9px; font-size:0.72rem; color:var(--primary); border-color:var(--primary);" title="Đặt nhanh cả Đường tròn & Đường thẳng mẫu">
+              🎯 Đặt mẫu nhanh
+            </button>
+          </div>
+        </div>
+
+        <!-- THANH CÔNG CỤ TƯƠNG TÁC BƯỚC 3: KÉO TỪNG TIẾP TUYẾN ĐỂ CẮT NHAU -->
+        <div id="step3InteractiveBar" style="display:none; background:var(--card-sub); border-bottom:1px solid var(--card-border); padding:8px 14px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--text);">Chế độ:</span>
+            <button class="btn btn-primary" id="btnP1ModeTangents" onclick="setP1Step3Mode('tangents')" style="font-size:0.75rem; padding:5px 12px;" title="Kéo từng tiếp tuyến để dài ra và cắt nhau tại M">
+              ✂️ Kéo từng tiếp tuyến để cắt
+            </button>
+            <button class="btn btn-outline" id="btnP1ModeM" onclick="setP1Step3Mode('pointM')" style="font-size:0.75rem; padding:5px 12px;" title="Kéo trực tiếp giao điểm M">
+              📍 Kéo giao điểm M
+            </button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <!-- Tiếp tuyến a -->
+            <div style="display:flex; align-items:center; gap:5px;">
+              <label for="sliderExtendA" style="font-size:0.74rem; font-weight:700; color:#0284c7; white-space:nowrap;">
+                📏 Tia a:
+              </label>
+              <input type="range" id="sliderExtendA" min="20" max="130" value="100" style="width:75px; cursor:pointer;" oninput="onTangentSliderAChange(this.value)">
+              <span id="lblExtendA" style="font-size:0.74rem; font-weight:700; color:#0284c7; min-width:34px;">100%</span>
+            </div>
+
+            <!-- Tiếp tuyến b -->
+            <div style="display:flex; align-items:center; gap:5px;">
+              <label for="sliderExtendB" style="font-size:0.74rem; font-weight:700; color:#059669; white-space:nowrap;">
+                📐 Tia b:
+              </label>
+              <input type="range" id="sliderExtendB" min="20" max="130" value="100" style="width:75px; cursor:pointer;" oninput="onTangentSliderBChange(this.value)">
+              <span id="lblExtendB" style="font-size:0.74rem; font-weight:700; color:#059669; min-width:34px;">100%</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button class="btn btn-outline" onclick="challengeCutTangents()" style="font-size:0.72rem; padding:4px 8px;" title="Thu ngắn cả 2 tiếp tuyến về 35% để tự kéo từng tiếp tuyến cắt nhau">
+                ✂️ Tự kéo cắt (35%)
+              </button>
+              <button class="btn btn-outline" onclick="snapCutTangents()" style="font-size:0.72rem; padding:4px 8px; color:var(--primary); border-color:var(--primary);" title="Khớp cả 2 tiếp tuyến cắt nhau tại M (100%)">
+                🎯 Khớp tại M
+              </button>
+              <button class="btn btn-outline" onclick="setStep3Parallel(true)" style="font-size:0.72rem; padding:4px 8px; color:var(--accent); border-color:var(--accent);" title="Trường hợp đặc biệt: AB là đường kính nên 2 tiếp tuyến song song, không cắt nhau">
+                ⚡ Song song
+              </button>
+              <button class="btn btn-outline" onclick="resetStep3Tangents()" style="font-size:0.72rem; padding:4px 8px;" title="Đặt lại góc cắt nhau 90°">
+                🔄 Cắt 90°
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper" id="canvasWrapperP1">
+          <canvas id="canvasP1"></canvas>
+          <div class="canvas-hud" id="hudP1">
+            <div id="hudP1Title" style="font-weight:700; color:#38bdf8; margin-bottom:2px;">Hoạt động 1: 3 Vị trí tương đối</div>
+            <div id="hudP1Desc" style="color:#cbd5e1; font-size:0.75rem;">Kéo đường thẳng màu lam lại gần hoặc ra xa tâm O để quan sát số điểm chung!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR: THEORY GUIDE -->
+      <div class="task-panel">
+        <div class="task-header">
+          <div>
+            <h3 id="p1Title" style="font-size:1rem; color:var(--text);">Khám Phá Vị Trí Tương Đối</h3>
+          </div>
+          <span style="font-size:0.75rem; color:var(--primary); font-weight:600;" id="p1StepIndicator">Phần 1/3</span>
+        </div>
+
+        <div class="task-body">
+          <div class="def-box" id="p1TheoryBox">
+            <b>1. Hệ thức giữa khoảng cách d và bán kính R:</b>
+            <div style="margin-top:6px; font-size:0.8rem; line-height:1.55;" id="p1TheoryContent">
+              • <b>d &lt; R:</b> Cắt nhau (2 điểm chung).<br>
+              • <b>d = R:</b> TIẾP XÚC NHAU (1 điểm chung duy nhất). Đường thẳng gọi là <b>Tiếp tuyến</b>, điểm chạm là <b>Tiếp điểm</b>.<br>
+              • <b>d &gt; R:</b> Không giao nhau (0 điểm chung).
+            </div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-item">Khoảng cách d = OH: <div class="metric-val" id="p1Dist">0 cm</div></div>
+            <div class="metric-item">Bán kính R: <div class="metric-val" id="p1Radius">50 cm</div></div>
+            <div class="metric-item">Số điểm chung: <div class="metric-val" id="p1Intersections" style="color:var(--primary);">1 điểm</div></div>
+            <div class="metric-item">Kết luận hình học: <div class="metric-val" id="p1Relation" style="font-size:0.82rem; color:var(--success);">Tiếp xúc nhau</div></div>
+          </div>
+
+          <div class="mission-box">
+            <div style="font-size:0.78rem; font-weight:700; color:var(--accent); margin-bottom:4px;">
+              ❓ CÂU HỎI TỰ KIỂM TRA NHANH:
+            </div>
+            <div id="p1QuestionText" style="font-size:0.8rem; color:var(--text); margin-bottom:6px;">
+              Khi tia nhìn của camera chỉ tiếp xúc mép cột tại đúng 1 điểm, khoảng cách d từ tâm cột đến tia nhìn bằng bao nhiêu?
+            </div>
+            <div id="p1AnswerBox" style="background:var(--card-sub); border:1px solid var(--card-border); border-radius:6px; padding:7px 10px; font-size:0.78rem; color:var(--success);">
+              ✅ Đáp án: d = R (khoảng cách đúng bằng bán kính). Khi đó tia nhìn là TIẾP TUYẾN.
+            </div>
+          </div>
+
+          <div style="margin-top:auto;">
+            <button class="btn btn-primary" id="btnNextP1Step" onclick="nextPeriod1Step()" style="width:100%; justify-content:center; padding:9px;">
+              Tiếp tục: Sang Hoạt Động Tiếp Theo ➔
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB 3: THỰC HÀNH 3 NHÓM CHUYÊN GIA -->
+  <div class="view-content" id="tabWorkspace">
+    <div class="lab-layout">
+      
+      <!-- LEFT CANVAS -->
+      <div class="canvas-card">
+        <div class="expert-bar">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.78rem; font-weight:600; color:#94a3b8;">Chọn Nhóm Chuyên Gia:</span>
+            <div class="role-pills">
+              <button class="role-btn role-1 active" onclick="selectExpert(1)">🔵 Nhóm 1: Độ Phủ 100%</button>
+              <button class="role-btn role-2" onclick="selectExpert(2)">🟢 Nhóm 2: Tiết Kiệm (1 Cam)</button>
+              <button class="role-btn role-3" onclick="selectExpert(3)">🟠 Nhóm 3: Bảo Vệ Cổ Vật</button>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="btn btn-outline" onclick="openMissionModal(currentExpert)" style="padding:4px 9px; font-size:0.75rem;">
+              📜 Xem Lệnh Nhiệm Vụ
+            </button>
+            <span style="font-size:0.78rem; font-weight:600; color:var(--text-muted);">Bán kính cột:</span>
+            <div style="display:inline-flex; align-items:center; background:var(--card-bg); border:1px solid var(--primary); border-radius:6px; padding:2px 8px; gap:3px;">
+              <input type="number" id="inputR" min="0.2" max="1.5" step="0.05" value="0.5" 
+                style="width:54px; background:transparent; border:none; color:var(--primary); font-weight:700; font-size:0.82rem; text-align:center; outline:none;" 
+                title="Nhập bán kính cột tròn (đơn vị: mét)">
+              <span style="font-size:0.78rem; font-weight:700; color:var(--text-muted);">m</span>
+            </div>
+            <button class="btn btn-outline" id="btnResetCanvas" style="padding:3px 7px; font-size:0.75rem;">🔄 Reset</button>
+          </div>
+        </div>
+
+        <!-- TOOLBAR: KHO THIẾT BỊ CAMERA (KÉO THẢ CAMERA VÀO SƠ ĐỒ) -->
+        <div class="camera-toolbox" id="cameraToolbox">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.75rem; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px;">
+              📦 Kho Thiết Bị:
+            </span>
+            <span style="font-size:0.73rem; color:var(--text-muted);">Kéo camera bên dưới thả vào sơ đồ sảnh để bắt đầu phân tích:</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <!-- Camera 1 Draggable Item -->
+            <div class="cam-drag-item" id="camDragItem1" draggable="true" title="Kéo Camera M1 thả vào sảnh bảo tàng (hoặc bấm để đặt)">
+              <span class="cam-dock-dot dot-cam1"></span>
+              <span class="cam-dock-label" id="camDockLabel1">📹 Kéo đặt Camera M₁</span>
+            </div>
+
+            <!-- Camera 2 Draggable Item (Chỉ dùng cho Nhóm 1) -->
+            <div class="cam-drag-item role-2-item" id="camDragItem2" draggable="true" title="Kéo Camera M2 thả vào sảnh bảo tàng (hoặc bấm để đặt)">
+              <span class="cam-dock-dot dot-cam2"></span>
+              <span class="cam-dock-label" id="camDockLabel2">📹 Kéo đặt Camera M₂</span>
+            </div>
+            
+            <button class="btn btn-outline" id="btnRecallCams" style="padding:3px 9px; font-size:0.72rem;" title="Thu hồi toàn bộ camera về kho thiết bị">
+              📥 Thu hồi về kho
+            </button>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="mainCanvas"></canvas>
+
+          <div class="canvas-hud" id="hudInstruction">
+            <div id="hudTitle" style="font-weight:700; color:var(--primary); margin-bottom:2px;">Chế độ: Nhóm 1</div>
+            <div id="hudDesc" style="color:var(--text-muted); font-size:0.75rem;">Kéo chuột di chuyển Camera M₁ và Camera M₂ để xóa 100% điểm mù.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT TASK PANEL -->
+      <div class="task-panel">
+        <div class="task-header">
+          <div>
+            <h3 id="sideExpertTitle" style="font-size:1rem; color:var(--text);">Bố Trí 2 Camera Xóa Sạch Điểm Mù</h3>
+          </div>
+          <button class="btn btn-outline" onclick="switchTab('tabPresentation'); takeSnapshot();" style="font-size:0.75rem; padding:4px 8px;">
+            Xuất Báo Cáo ➔
+          </button>
+        </div>
+
+        <div class="task-body">
+          <div class="mission-box">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--primary); margin-bottom:4px;">🎯 THỬ THÁCH KHÁM PHÁ CỦA NHÓM:</div>
+            <div id="missionPrompt" style="font-size:0.82rem; color:var(--text); line-height:1.5;">
+              Tự do kéo các Camera quanh sảnh để tìm cấu hình triệt tiêu hoàn toàn vùng mù (Độ phủ đạt 100%) và vận dụng Định lí 1 & 2 để giải thích!
+            </div>
+
+            <!-- THÔNG TIN PHÒNG CỐ ĐỊNH -->
+            <div style="font-size:0.75rem; color:var(--text-muted); margin:8px 0; padding:6px 10px; background:var(--card-sub); border-radius:6px; border:1px solid var(--card-border); display:flex; justify-content:space-between; align-items:center;">
+              <span>🏛️ Sảnh: <b style="color:var(--text);" id="sideRoomDimensions">8.0 m × 5.0 m</b></span>
+              <span>Diện tích sàn: <b style="color:var(--primary);" id="sideRoomArea">40.0 m²</b></span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metric-item">Vị trí M₁: <div class="metric-val" id="metricM1">Chưa đặt</div></div>
+              <div class="metric-item" id="metricBox2">Vị trí M₂: <div class="metric-val" id="metricM2">Chưa đặt</div></div>
+              <div class="metric-item">Góc quét ∠AMB: <div class="metric-val" id="metricAngle">--</div></div>
+              <div class="metric-item" id="metricBoxExtra"><span id="lblMetricExtra">Góc lệch 2 Cam:</span> <div class="metric-val" id="metricExtra">--</div></div>
+            </div>
+
+            <!-- THƯỚC ĐO TIẾN TRÌNH KHÁM PHÁ / ĐỘ PHỦ 360 -->
+            <div style="margin-top:10px; margin-bottom:10px; padding:10px; background:var(--card-sub); border-radius:8px; border:1px solid var(--card-border);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <span id="lblCoverageTitle" style="font-size:0.75rem; font-weight:700; color:var(--primary);">📊 THƯỚC ĐO ĐỘ PHỦ SÀN:</span>
+                <span id="valCoveragePercent" style="font-size:0.82rem; font-weight:800; color:var(--primary);">0.00%</span>
+              </div>
+              <div style="height:10px; width:100%; background:var(--card-border-sub); border-radius:5px; overflow:hidden; position:relative;">
+                <div id="barCoverage" style="height:100%; width:0%; background:#ef4444; border-radius:5px; transition:width 0.25s ease, background 0.25s ease;"></div>
+              </div>
+              <div id="noteCoverage" style="font-size:0.72rem; color:var(--text-muted); margin-top:5px; line-height:1.4;">
+                Kéo camera từ kho thiết bị vào sơ đồ để bắt đầu đo độ phủ sàn.
+              </div>
+            </div>
+
+            <div class="target-status-box" id="statusBox" style="background:rgba(16, 185, 129, 0.15); color:#a7f3d0; border:1px solid rgba(16, 185, 129, 0.3);">
+              <span id="statusIcon" style="font-size:1.3rem;">🛡️</span>
+              <div id="statusText">Trạng thái: Đang theo dõi an ninh</div>
+            </div>
+          </div>
+
+          <div class="mission-box" style="border-left:3px solid #38bdf8;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <div style="font-size:0.78rem; font-weight:700; color:#38bdf8;">
+                💡 GỢI Ý TƯ DUY TOÁN HỌC (BÀI 16):
+              </div>
+            </div>
+            <div id="mathGuideText" style="font-size:0.78rem; color:#cbd5e1; line-height:1.55;">
+              • Quan sát cặp tiếp tuyến biên M₁A, M₁B: Áp dụng Định lí 1 (OA ⊥ M₁A, OB ⊥ M₁B).<br>
+              • Quan sát đường nối tâm M₁O: Áp dụng Định lí 2 (M₁O là phân giác góc quét ∠AMB).<br>
+              • Hãy thử xoay 2 camera quanh cột: Hai cặp tiếp tuyến cần đan chéo nhau như thế nào để khép kín 360°?
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB 4: BÁO CÁO & TRANH BIỆN -->
+  <div class="view-content" id="tabPresentation">
+    <div class="studio-container">
+      <div class="report-card">
+        <div class="report-header">
+          <h2 style="font-size:1.15rem; color:var(--text);">📝 Xưởng Hoàn Thiện Bản Báo Cáo Thiết Kế</h2>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="input-group">
+            <label class="input-label">Tên nhóm chuyên gia:</label>
+            <input type="text" class="input-field" id="txtGroupName" value="Nhóm 1 - Chuyên Gia Quang Học & Độ Phủ 100%">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Thành viên trong nhóm:</label>
+            <input type="text" class="input-field" id="txtMembers" value="Nguyễn Văn A, Trần Thị B, Lê Văn C">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Tên giải pháp an ninh dự thi:</label>
+          <input type="text" class="input-field" id="txtProjectTitle" value="Hệ Thống Camera Kép Tiếp Tuyến Chéo - Triệt Tiêu 100% Điểm Mù">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Luận điểm Toán học bảo vệ trước Hội đồng (Bài 16):</label>
+          <textarea class="input-field" id="txtMathProof" rows="4" style="resize:vertical; line-height:1.5;"></textarea>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <button class="btn btn-primary" id="btnUpdateSnapshot">
+            📸 Cập nhật ảnh sơ đồ từ phòng nghiên cứu
+          </button>
+          <button class="btn btn-success" id="btnStartPresentation">
+            🖥️ Bật Chế Độ Thuyết Trình Toàn Màn Hình
+          </button>
+        </div>
+      </div>
+
+      <div class="report-card">
+        <div class="report-header">
+          <h2 style="font-size:1.15rem; color:var(--text);">🔍 Bản Xem Trước Slide Thuyết Trình</h2>
+          <span style="font-size:0.75rem; color:var(--success); font-weight:600;">● Sẵn sàng báo cáo</span>
+        </div>
+
+        <div class="snapshot-box" id="snapshotContainer">
+          <img id="previewImg" class="snapshot-img" alt="Sơ đồ mô phỏng an ninh">
+          <div id="snapshotPlaceholder" style="color:var(--text-muted); font-size:0.82rem;">
+            Chưa có ảnh chụp sơ đồ. Hãy bấm nút "Cập nhật ảnh sơ đồ" bên trái!
+          </div>
+        </div>
+
+        <div style="background:var(--card-sub); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; font-size:0.8rem; line-height:1.55; color:var(--text);">
+          <div><b>Thông số thiết kế chuyên gia ghi nhận:</b></div>
+          <div id="previewMetricsText" style="color:#cbd5e1;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP LỆNH NHIỆM VỤ (MISSION ORDER MODAL) -->
+  <div class="mission-modal-overlay" id="missionModalOverlay">
+    <div class="mission-dispatch-card">
+      <div class="dispatch-header">
+        <h3 id="dispatchModalTitle">🚨 LỆNH ĐIỀU PHỐI NHIỆM VỤ SỐ 01</h3>
+        <button style="background:transparent; border:none; color:#cbd5e1; font-size:1.5rem; cursor:pointer;" onclick="closeMissionModal()">&times;</button>
+      </div>
+
+      <div class="dispatch-body">
+        <div class="dispatch-meta-grid">
+          <div><b>Đơn vị phát lệnh:</b> Ban Giám Đốc Bảo Tàng Mỹ Thuật</div>
+          <div><b>Đối tượng thi hành:</b> <span id="dispatchTargetGroup" style="color:#38bdf8; font-weight:700;">Nhóm Chuyên Gia 1</span></div>
+          <div><b>Khu vực triển khai:</b> Sảnh trưng bày trung tâm</div>
+          <div><b>Công cụ sử dụng:</b> Toán học 9 - Bài 16 & Web App 2D</div>
+        </div>
+
+        <div class="dispatch-section" id="dispatchSectionBox">
+          <b id="dispatchGoalTitle">MỤC TIÊU CHIẾN LƯỢC:</b>
+          <p id="dispatchGoalText" style="margin-top:4px; color:#e2e8f0;"></p>
+        </div>
+
+        <div>
+          <b id="dispatchTasksHeader" style="font-size:0.82rem; color:#fbbf24;">🧭 LỘ TRÌNH TỰ KHÁM PHÁ & THỬ NGHIỆM ĐỘC LẬP:</b>
+          <div class="dispatch-tasks" id="dispatchTasksList" style="margin-top:6px;"></div>
+        </div>
+      </div>
+
+      <div class="dispatch-footer">
+        <button class="btn btn-outline" onclick="closeMissionModal()">Đóng</button>
+        <button class="btn btn-primary" onclick="acceptAndStartMission()">
+          ⚡ TIẾP NHẬN LỆNH & BẮT ĐẦU THỰC HÀNH NGAY ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN PRESENTATION OVERLAY -->
+  <div class="presentation-overlay" id="presOverlay">
+    <div class="pres-header">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <h2 id="presModalTitle" style="font-size:1.25rem; color:#fff;">Tên dự án</h2>
+      </div>
+      <button class="btn btn-outline" id="btnClosePres">✖️ Thoát chế độ thuyết trình</button>
+    </div>
+
+    <div class="pres-body">
+      <div class="pres-slide">
+        <img id="presImg" style="width:100%; max-height:430px; object-fit:contain; border-radius:10px; border:1px solid var(--card-border);">
+      </div>
+
+      <div class="pres-slide" style="gap:14px;">
+        <div>
+          <span style="font-size:0.75rem; color:#38bdf8; font-weight:700;">ĐỘI KỸ SƯ TRÌNH BÀY:</span>
+          <h3 id="presTeam" style="font-size:1.25rem; color:#fff; margin-top:2px;">Tên nhóm</h3>
+          <p id="presMembers" style="font-size:0.85rem; color:#94a3b8;">Thành viên</p>
+        </div>
+
+        <div style="background:#121827; border:1px solid var(--card-border); border-radius:8px; padding:12px;">
+          <h4 style="font-size:0.9rem; color:#fbbf24; margin-bottom:6px;">📐 Luận Điểm Toán Học Chứng Minh (Bài 16):</h4>
+          <div id="presProofText" style="font-size:0.82rem; color:#cbd5e1; line-height:1.55; white-space:pre-line;"></div>
+        </div>
+
+        <div id="presStatusBanner" style="background:rgba(16, 185, 129, 0.15); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 14px; display:flex; align-items:center; gap:10px;">
+          <div style="font-size:1.6rem;">🛡️</div>
+          <div>
+            <div style="font-weight:700; color:#a7f3d0; font-size:0.9rem;">KẾT QUẢ ĐÁNH GIÁ CHUYÊN GIA: AN TOÀN</div>
+            <div style="font-size:0.78rem; color:#d1fae5;">Giải pháp hoàn toàn khả thi và đáp ứng tiêu chuẩn an ninh bảo tàng.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- APP STATE & NAVIGATION ---
+    let currentTab = 'tabOverview';
+    let currentPeriod1Step = 1;
+    let currentExpert = 1;
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+      document.querySelectorAll('.view-content').forEach(c => c.classList.toggle('active', c.id === tabId));
+      
+      if (tabId === 'tabPeriod1') {
+        setTimeout(resizeP1, 40);
+      } else if (tabId === 'tabWorkspace') {
+        setTimeout(resize, 40);
+      }
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.addEventListener('click', () => switchTab(b.dataset.tab));
+    });
+
+    // ==========================================
+    // PERIOD 1: CORE THEORY ENGINE
+    // ==========================================
+    const canvasP1 = document.getElementById('canvasP1');
+    const ctxP1 = canvasP1.getContext('2d');
+    const containerP1 = document.getElementById('canvasWrapperP1');
+
+    let widthP1 = 0, heightP1 = 0;
+    const O_P1 = { x: 0, y: 0, r: 50 };
+    let lineY_P1 = 0;
+    let lineDistP1 = 50;
+    let isDraggingLineP1 = false;
+    let isDraggingCircleP1 = false;
+    let dragCircleOffset = { x: 0, y: 0 };
+    let dragLineOffsetY = 0;
+    const PointM_P1 = { x: 0, y: 0, isDragging: false };
+
+    // --- KHÁM PHÁ KIẾN THỨC: TRẠNG THÁI HÌNH HỌC (BAN ĐẦU TRỐNG ĐỂ HỌC SINH TỰ VẼ) ---
+    const P1Elements = {
+      circle: false,
+      line1: false,
+      line2: false
+    };
+
+    let draggedP1Type = null;
+
+    function setP1Radius(val) {
+      let r = parseInt(val, 10);
+      if (isNaN(r) || r < 20) r = 20;
+      if (r > 120) r = 120;
+      O_P1.r = r;
+      const inp = document.getElementById('p1RadiusInput');
+      const sld = document.getElementById('p1RadiusSlider');
+      if (inp && parseInt(inp.value, 10) !== r) inp.value = r;
+      if (sld && parseInt(sld.value, 10) !== r) sld.value = r;
+      drawP1();
+    }
+
+    function quickSampleP1() {
+      P1Elements.circle = true;
+      P1Elements.line1 = true;
+      P1Elements.line2 = false;
+      if (!O_P1.x) {
+        O_P1.x = widthP1 / 2;
+        O_P1.y = heightP1 / 2 - 20;
+      }
+      lineY_P1 = O_P1.y + O_P1.r + 35; // Khởi tạo d > R
+      updateP1ToolboxUI();
+      drawP1();
+    }
+
+    function deployP1Element(type, x, y) {
+      if (type === 'circle') {
+        P1Elements.circle = true;
+        if (x !== undefined && y !== undefined) {
+          O_P1.x = Math.max(O_P1.r + 20, Math.min(widthP1 - O_P1.r - 20, x));
+          O_P1.y = Math.max(O_P1.r + 20, Math.min(heightP1 - O_P1.r - 50, y));
+        } else if (!O_P1.x) {
+          O_P1.x = widthP1 / 2;
+          O_P1.y = heightP1 / 2 - 20;
+        }
+      } else if (type === 'line1') {
+        if (!P1Elements.circle) {
+          P1Elements.circle = true;
+          if (!O_P1.x) {
+            O_P1.x = widthP1 / 2;
+            O_P1.y = heightP1 / 2 - 20;
+          }
+        }
+        P1Elements.line1 = true;
+        if (y !== undefined) {
+          lineY_P1 = y;
+        } else if (!lineY_P1) {
+          lineY_P1 = O_P1.y + O_P1.r + 35;
+        }
+      } else if (type === 'line2') {
+        if (!P1Elements.circle) P1Elements.circle = true;
+        if (!P1Elements.line1) P1Elements.line1 = true;
+        P1Elements.line2 = true;
+        currentPeriod1Step = 3;
+        document.querySelectorAll('.step-btn').forEach((b, idx) => b.classList.toggle('active', idx + 1 === 3));
+        const bar3 = document.getElementById('step3InteractiveBar');
+        if (bar3) bar3.style.display = 'flex';
+      }
+      updateP1ToolboxUI();
+      drawP1();
+    }
+
+    function recallP1Elements() {
+      P1Elements.circle = false;
+      P1Elements.line1 = false;
+      P1Elements.line2 = false;
+      lineY_P1 = 0;
+      updateP1ToolboxUI();
+      drawP1();
+    }
+
+    function toggleP1Element(type) {
+      if (type === 'circle') {
+        P1Elements.circle = !P1Elements.circle;
+        if (!P1Elements.circle) {
+          P1Elements.line1 = false;
+          P1Elements.line2 = false;
+        }
+      } else if (type === 'line1') {
+        if (!P1Elements.circle) P1Elements.circle = true;
+        P1Elements.line1 = !P1Elements.line1;
+        if (!P1Elements.line1) P1Elements.line2 = false;
+      } else if (type === 'line2') {
+        if (!P1Elements.circle) P1Elements.circle = true;
+        if (!P1Elements.line1) P1Elements.line1 = true;
+        P1Elements.line2 = !P1Elements.line2;
+        if (P1Elements.line2) {
+          currentPeriod1Step = 3;
+          document.querySelectorAll('.step-btn').forEach((b, idx) => b.classList.toggle('active', idx + 1 === 3));
+          const bar3 = document.getElementById('step3InteractiveBar');
+          if (bar3) bar3.style.display = 'flex';
+        }
+      }
+      updateP1ToolboxUI();
+      drawP1();
+    }
+
+    function updateP1ToolboxUI() {
+      const itemC = document.getElementById('p1DragItemCircle');
+      const labelC = document.getElementById('p1DockLabelCircle');
+      const itemL1 = document.getElementById('p1DragItemLine1');
+      const labelL1 = document.getElementById('p1DockLabelLine1');
+      const itemL2 = document.getElementById('p1DragItemLine2');
+      const labelL2 = document.getElementById('p1DockLabelLine2');
+      const bar3 = document.getElementById('step3InteractiveBar');
+
+      if (itemC && labelC) {
+        if (P1Elements.circle) {
+          itemC.classList.add('deployed');
+          labelC.innerText = '✅ Đã vẽ Đường tròn (O)';
+        } else {
+          itemC.classList.remove('deployed');
+          labelC.innerText = '⭕ Vẽ Đường tròn (O)';
+        }
+      }
+
+      if (itemL1 && labelL1) {
+        if (P1Elements.line1) {
+          itemL1.classList.add('deployed');
+          labelL1.innerText = '✅ Đã vẽ Đường thẳng a';
+        } else {
+          itemL1.classList.remove('deployed');
+          labelL1.innerText = '📏 Vẽ Đường thẳng a';
+        }
+      }
+
+      if (itemL2 && labelL2) {
+        if (P1Elements.line2) {
+          itemL2.classList.add('deployed');
+          labelL2.innerText = '✅ Đã vẽ Tiếp tuyến b';
+          if (bar3) bar3.style.display = 'flex';
+        } else {
+          itemL2.classList.remove('deployed');
+          labelL2.innerText = '📐 Đường thẳng b (Tiếp tuyến 2)';
+          if (bar3 && currentPeriod1Step !== 3) bar3.style.display = 'none';
+        }
+      }
+    }
+
+    // --- BƯỚC 3: TIẾP TUYẾN CẮT NHAU (CHẾ ĐỘ KÉO TỪNG TIẾP TUYẾN ĐỂ CẮT) ---
+    let p1Step3Mode = 'tangents'; // 'tangents' (Kéo từng tiếp tuyến để cắt) hoặc 'pointM' (Kéo giao điểm M)
+    let angleA_P1 = -Math.PI / 3; // Tiếp điểm A: -60 độ (phía trên phải)
+    let angleB_P1 = Math.PI / 3;  // Tiếp điểm B: +60 độ (phía dưới phải)
+    let tangentExtendPctA = 100;  // 20% đến 140% cho tiếp tuyến a
+    let tangentExtendPctB = 100;  // 20% đến 140% cho tiếp tuyến b
+    let isDraggingA_P1 = false;
+    let isDraggingB_P1 = false;
+    let isDraggingTipA = false;
+    let isDraggingTipB = false;
+
+    // Tính toán giao điểm M và tiếp điểm từ góc quay quanh tâm O
+    function computeIntersectionFromTangents(angleA, angleB, circle) {
+      let diff = angleB - angleA;
+      while (diff <= -Math.PI) diff += 2 * Math.PI;
+      while (diff > Math.PI) diff -= 2 * Math.PI;
+      const absDiff = Math.abs(diff);
+
+      const A = {
+        x: circle.x + circle.r * Math.cos(angleA),
+        y: circle.y + circle.r * Math.sin(angleA)
+      };
+      const B = {
+        x: circle.x + circle.r * Math.cos(angleB),
+        y: circle.y + circle.r * Math.sin(angleB)
+      };
+
+      // Hai tiếp tuyến song song khi A và B là 2 đầu đường kính (góc ở tâm ~ 180 độ)
+      if (Math.abs(absDiff - Math.PI) < 0.05) {
+        return { isParallel: true, isCoincident: false, A, B, M: null, absDiff };
+      }
+      if (absDiff < 0.05) {
+        return { isParallel: false, isCoincident: true, A, B, M: null, absDiff };
+      }
+
+      // Giải hệ tọa độ giao điểm M:
+      // (X - Ox)*cosA + (Y - Oy)*sinA = R
+      // (X - Ox)*cosB + (Y - Oy)*sinB = R
+      const D = Math.sin(angleB - angleA);
+      const Dx = circle.r * (Math.sin(angleB) - Math.sin(angleA));
+      const Dy = circle.r * (Math.cos(angleA) - Math.cos(angleB));
+      const X_M = Dx / D;
+      const Y_M = Dy / D;
+
+      const M = { x: circle.x + X_M, y: circle.y + Y_M };
+      const d = Math.hypot(M.x - circle.x, M.y - circle.y);
+      const tangentLen = Math.hypot(M.x - A.x, M.y - A.y);
+      const angleAMB_deg = 2 * Math.asin(Math.min(1, circle.r / Math.max(circle.r, d))) * (180 / Math.PI);
+
+      return {
+        isParallel: false,
+        isCoincident: false,
+        A,
+        B,
+        M,
+        d,
+        tangentLen,
+        angleAMB_deg,
+        absDiff
+      };
+    }
+
+    function setP1Step3Mode(mode) {
+      p1Step3Mode = mode;
+      const btnTangents = document.getElementById('btnP1ModeTangents');
+      const btnM = document.getElementById('btnP1ModeM');
+      if (btnTangents && btnM) {
+        btnTangents.className = mode === 'tangents' ? 'btn btn-primary' : 'btn btn-outline';
+        btnM.className = mode === 'pointM' ? 'btn btn-primary' : 'btn btn-outline';
+      }
+      const hudDesc = document.getElementById('hudP1Desc');
+      if (hudDesc) {
+        if (mode === 'tangents') {
+          hudDesc.innerHTML = '✂️ <b>Chế độ Kéo tiếp tuyến để cắt:</b> Chạm & kéo tiếp điểm <b>A</b> hoặc <b>B</b> quanh đường tròn, hoặc kéo thanh trượt để vươn dài tiếp tuyến cắt nhau tại <b>M</b>!';
+        } else {
+          hudDesc.innerHTML = '📍 <b>Chế độ Kéo giao điểm M:</b> Kéo điểm <b>M</b> tự do ngoài đường tròn để khảo sát các vị trí khác nhau!';
+        }
+      }
+      drawP1();
+    }
+
+    function updateStep3SlidersUI() {
+      const sA = document.getElementById('sliderExtendA');
+      const lA = document.getElementById('lblExtendA');
+      if (sA) sA.value = tangentExtendPctA;
+      if (lA) lA.innerText = tangentExtendPctA + '%';
+
+      const sB = document.getElementById('sliderExtendB');
+      const lB = document.getElementById('lblExtendB');
+      if (sB) sB.value = tangentExtendPctB;
+      if (lB) lB.innerText = tangentExtendPctB + '%';
+    }
+
+    function onTangentSliderAChange(val) {
+      tangentExtendPctA = parseInt(val, 10);
+      const lbl = document.getElementById('lblExtendA');
+      if (lbl) lbl.innerText = val + '%';
+      drawP1();
+    }
+
+    function onTangentSliderBChange(val) {
+      tangentExtendPctB = parseInt(val, 10);
+      const lbl = document.getElementById('lblExtendB');
+      if (lbl) lbl.innerText = val + '%';
+      drawP1();
+    }
+
+    function challengeCutTangents() {
+      tangentExtendPctA = 35;
+      tangentExtendPctB = 35;
+      updateStep3SlidersUI();
+      drawP1();
+    }
+
+    function snapCutTangents() {
+      tangentExtendPctA = 100;
+      tangentExtendPctB = 100;
+      updateStep3SlidersUI();
+      drawP1();
+    }
+
+    function setStep3Parallel(isPar) {
+      angleA_P1 = -Math.PI / 2; // -90 độ (Đỉnh trên)
+      angleB_P1 = Math.PI / 2;  // +90 độ (Đáy dưới)
+      tangentExtendPctA = 100;
+      tangentExtendPctB = 100;
+      updateStep3SlidersUI();
+      drawP1();
+    }
+
+    function resetStep3Tangents() {
+      angleA_P1 = -Math.PI / 4; // -45 độ
+      angleB_P1 = Math.PI / 4;  // +45 độ (cắt nhau vuông góc tại M)
+      tangentExtendPctA = 100;
+      tangentExtendPctB = 100;
+      updateStep3SlidersUI();
+      drawP1();
+    }
+
+    function resizeP1() {
+      widthP1 = containerP1.clientWidth || 850;
+      heightP1 = containerP1.clientHeight || 560;
+      canvasP1.width = widthP1;
+      canvasP1.height = heightP1;
+
+      O_P1.x = widthP1 / 2;
+      O_P1.y = heightP1 / 2;
+
+      // Cập nhật vị trí M ban đầu theo góc tiếp tuyến
+      const initRes = computeIntersectionFromTangents(angleA_P1, angleB_P1, O_P1);
+      if (initRes && initRes.M) {
+        PointM_P1.x = initRes.M.x;
+        PointM_P1.y = initRes.M.y;
+      } else {
+        PointM_P1.x = O_P1.x + 100;
+        PointM_P1.y = O_P1.y;
+      }
+
+      drawP1();
+    }
+
+    function setPeriod1Step(stepNum) {
+      currentPeriod1Step = stepNum;
+      document.querySelectorAll('.step-btn').forEach((b, idx) => b.classList.toggle('active', idx + 1 === stepNum));
+      document.getElementById('p1StepIndicator').innerText = `Phần ${stepNum}/3`;
+
+      const bar3 = document.getElementById('step3InteractiveBar');
+      if (bar3) bar3.style.display = (stepNum === 3) ? 'flex' : 'none';
+
+      // Cập nhật cấu hình hình học tương ứng từng hoạt động
+      if (stepNum === 1) {
+        P1Elements.circle = false;
+        P1Elements.line1 = false;
+        P1Elements.line2 = false;
+        lineY_P1 = 0;
+      } else if (stepNum === 2) {
+        P1Elements.circle = true;
+        P1Elements.line1 = true;
+        P1Elements.line2 = false;
+        lineY_P1 = O_P1.y + O_P1.r;
+        lineDistP1 = O_P1.r;
+      } else if (stepNum === 3) {
+        P1Elements.circle = true;
+        P1Elements.line1 = true;
+        P1Elements.line2 = true;
+        updateStep3SlidersUI();
+      }
+      updateP1ToolboxUI();
+
+      const hudTitle = document.getElementById('hudP1Title');
+      const hudDesc = document.getElementById('hudP1Desc');
+      const p1Title = document.getElementById('p1Title');
+      const theoryContent = document.getElementById('p1TheoryContent');
+      const qText = document.getElementById('p1QuestionText');
+      const aBox = document.getElementById('p1AnswerBox');
+      const btnNext = document.getElementById('btnNextP1Step');
+
+      if (stepNum === 1) {
+        hudTitle.innerText = 'Hoạt động 1: 3 Vị trí tương đối của đường thẳng và đường tròn';
+        hudDesc.innerText = 'Dùng công cụ để vẽ Đường tròn và Đường thẳng, sau đó cầm kéo để khảo sát 3 vị trí tương đối!';
+        p1Title.innerText = 'Khám Phá Vị Trí Tương Đối';
+        theoryContent.innerHTML = `
+          • <b>d &lt; R:</b> Đường thẳng CẮT đường tròn tại 2 điểm chung.<br>
+          • <b>d = R:</b> TIẾP XÚC NHAU (1 điểm chung duy nhất). Đường thẳng gọi là <b>Tiếp tuyến</b>, điểm chạm là <b>Tiếp điểm</b>.<br>
+          • <b>d &gt; R:</b> Không giao nhau (0 điểm chung).
+        `;
+        qText.innerText = 'Khi kéo đường thẳng chạm mép ngoài đường tròn, có bao nhiêu điểm chung?';
+        aBox.innerHTML = '✅ Có duy nhất 1 điểm chung. Đó là vị trí TIẾP XÚC NHAU (d = R).';
+        btnNext.innerText = 'Tiếp tục: Sang Định lí 1 (Dấu hiệu tiếp tuyến) ➔';
+      } else if (stepNum === 2) {
+        hudTitle.innerText = 'Hoạt động 2: Định lí 1 - Dấu hiệu nhận biết tiếp tuyến';
+        hudDesc.innerText = 'Quan sát bán kính OH vuông góc với tiếp tuyến a tại tiếp điểm H!';
+        p1Title.innerText = 'Định lí 1: Tiếp Tuyến ⊥ Bán Kính';
+        lineDistP1 = O_P1.r;
+        theoryContent.innerHTML = `
+          <b>Định lí 1 (Dấu hiệu nhận biết tiếp tuyến):</b><br>
+          Nếu một đường thẳng đi qua một điểm nằm trên một đường tròn và <b>vuông góc với bán kính</b> đi qua điểm đó thì đường thẳng ấy là một <b>tiếp tuyến</b> của đường tròn (a ⊥ OH tại H ∈ (O)).
+        `;
+        qText.innerText = 'Góc tạo bởi tiếp tuyến a và bán kính OH tại tiếp điểm H bằng bao nhiêu độ?';
+        aBox.innerHTML = '✅ Luôn vuông góc: ∠OHa = 90° (vuông góc tại tiếp điểm).';
+        btnNext.innerText = 'Tiếp tục: Sang Định lí 2 (Hai tiếp tuyến cắt nhau) ➔';
+      } else if (stepNum === 3) {
+        hudTitle.innerText = 'Hoạt động 3: Định lí 2 - Hai tiếp tuyến cắt nhau (Kéo để cắt)';
+        hudDesc.innerHTML = '✂️ <b>Kéo tiếp tuyến để cắt nhau:</b> Kéo tiếp điểm <b>A</b>, <b>B</b> hoặc kéo dài tiếp tuyến để hai tiếp tuyến cắt nhau tại <b>M</b>!';
+        p1Title.innerText = 'Định lí 2: Hai Tiếp Tuyến Cắt Nhau';
+        theoryContent.innerHTML = `
+          <b>Định lí 2:</b> Nếu 2 tiếp tuyến của đường tròn (O) cắt nhau tại điểm M với tiếp điểm A và B:<br>
+          1. Điểm M cách đều 2 tiếp điểm: <b>MA = MB</b>.<br>
+          2. Tia MO là <b>tia phân giác</b> của góc ∠AMB.<br>
+          3. Tia OM là <b>tia phân giác</b> của góc ∠AOB.<br>
+          4. OM là đường trung trực của đoạn thẳng AB (OM ⊥ AB).<br>
+          <span style="color:var(--accent); font-size:0.78rem;">⚠️ <i>Điều kiện để 2 tiếp tuyến cắt nhau:</i> AB không được là đường kính (nếu AB là đường kính thì 2 tiếp tuyến song song, không cắt nhau).</span>
+        `;
+        qText.innerText = 'Khi nào thì hai tiếp tuyến của một đường tròn KHÔNG THỂ cắt nhau?';
+        aBox.innerHTML = '✅ Khi hai tiếp điểm A và B là hai đầu của một ĐƯỜNG KÍNH (A, O, B thẳng hàng). Khi đó hai tiếp tuyến song song nhau (d₁ // d₂).';
+        btnNext.innerText = '🎉 Hoàn Thành: Bước Sang Thực Hành Chuyên Gia ➔';
+      }
+
+      drawP1();
+    }
+
+    function nextPeriod1Step() {
+      if (currentPeriod1Step < 3) {
+        setPeriod1Step(currentPeriod1Step + 1);
+      } else {
+        switchTab('tabWorkspace');
+        openMissionModal(1);
+      }
+    }
+
+    function drawP1() {
+      const isDark = document.body.classList.contains('dark-theme');
+      ctxP1.clearRect(0, 0, widthP1, heightP1);
+
+      // Nền tĩnh Period 1
+      ctxP1.fillStyle = isDark ? '#141b2d' : '#ffffff';
+      ctxP1.fillRect(0, 0, widthP1, heightP1);
+
+      // Grid dịu mắt
+      ctxP1.strokeStyle = isDark ? '#202d45' : '#f1f5f9';
+      ctxP1.lineWidth = 1;
+      for (let x = 0; x < widthP1; x += 40) {
+        ctxP1.beginPath(); ctxP1.moveTo(x, 0); ctxP1.lineTo(x, heightP1); ctxP1.stroke();
+      }
+      for (let y = 0; y < heightP1; y += 40) {
+        ctxP1.beginPath(); ctxP1.moveTo(0, y); ctxP1.lineTo(widthP1, y); ctxP1.stroke();
+      }
+
+      // 1. KIỂM TRA ĐƯỜNG TRÒN (O) ĐÃ ĐƯỢC VẼ VÀO BẢNG CHƯA
+      if (!P1Elements.circle) {
+        ctxP1.save();
+        ctxP1.textAlign = 'center';
+        const boxW = Math.min(widthP1 - 40, 560);
+        const boxH = 100;
+        const boxX = (widthP1 - boxW) / 2;
+        const boxY = (heightP1 - boxH) / 2;
+        ctxP1.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.96)';
+        ctxP1.fillRect(boxX, boxY, boxW, boxH);
+        ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctxP1.lineWidth = 1.5;
+        ctxP1.strokeRect(boxX, boxY, boxW, boxH);
+
+        ctxP1.font = 'bold 13.5px Segoe UI';
+        ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctxP1.fillText('🧰 BẢNG VẼ TRỐNG: TỰ KHÁM PHÁ 3 VỊ TRÍ TƯƠNG ĐỐI', widthP1 / 2, boxY + 28);
+        ctxP1.font = '12px Segoe UI';
+        ctxP1.fillStyle = isDark ? '#cbd5e1' : '#475569';
+        ctxP1.fillText(`👉 BƯỚC 1: Chọn kích thước R (hiện tại: ${O_P1.r} cm) rồi nhấp "⭕ Vẽ Đường tròn (O)"`, widthP1 / 2, boxY + 52);
+        ctxP1.fillText('👉 BƯỚC 2: Nhấp "📏 Vẽ Đường thẳng a" (hoặc nhấp "🎯 Đặt mẫu nhanh")', widthP1 / 2, boxY + 72);
+        ctxP1.font = 'italic 11px Segoe UI';
+        ctxP1.fillStyle = isDark ? '#94a3b8' : '#64748b';
+        ctxP1.fillText('👉 BƯỚC 3: Cầm kéo đường tròn hoặc đường thẳng để tự do khám phá 3 vị trí (d > R, d = R, d < R)!', widthP1 / 2, boxY + 90);
+        ctxP1.restore();
+
+        document.getElementById('p1Dist').innerText = 'Chưa vẽ';
+        document.getElementById('p1Radius').innerText = `${O_P1.r} cm`;
+        const interVal = document.getElementById('p1Intersections');
+        interVal.innerText = 'Chưa vẽ hình';
+        interVal.style.color = '#94a3b8';
+        const relVal = document.getElementById('p1Relation');
+        relVal.innerText = 'Dùng công cụ trên thanh công cụ để vẽ hình';
+        relVal.style.color = '#94a3b8';
+        return;
+      }
+
+      // 2. VẼ ĐƯỜNG TRÒN (O)
+      ctxP1.save();
+      ctxP1.beginPath(); ctxP1.arc(O_P1.x, O_P1.y, O_P1.r, 0, Math.PI * 2);
+      ctxP1.fillStyle = isDark ? '#141d2e' : '#f0f9ff'; ctxP1.fill();
+      ctxP1.lineWidth = 2.5; ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7'; ctxP1.stroke();
+
+      // Tâm O
+      ctxP1.beginPath(); ctxP1.arc(O_P1.x, O_P1.y, 4.5, 0, Math.PI * 2);
+      ctxP1.fillStyle = '#fbbf24'; ctxP1.fill();
+      ctxP1.strokeStyle = '#ffffff'; ctxP1.lineWidth = 1.5; ctxP1.stroke();
+      ctxP1.fillStyle = isDark ? '#f8fafc' : '#0f172a'; ctxP1.font = 'bold 12px Segoe UI';
+      ctxP1.fillText('O', O_P1.x - 14, O_P1.y - 6);
+
+      // Bán kính đường tròn bằng nét đứt và hiển thị độ dài bán kính
+      const p1Angle = -Math.PI / 4;
+      const p1EdgeX = O_P1.x + O_P1.r * Math.cos(p1Angle);
+      const p1EdgeY = O_P1.y + O_P1.r * Math.sin(p1Angle);
+
+      ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctxP1.lineWidth = 1.8;
+      ctxP1.setLineDash([5, 4]);
+      ctxP1.beginPath();
+      ctxP1.moveTo(O_P1.x, O_P1.y);
+      ctxP1.lineTo(p1EdgeX, p1EdgeY);
+      ctxP1.stroke();
+      ctxP1.setLineDash([]);
+
+      ctxP1.beginPath();
+      ctxP1.arc(p1EdgeX, p1EdgeY, 3.5, 0, Math.PI * 2);
+      ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctxP1.fill();
+
+      // Hiển thị nhãn R
+      const p1RLabel = `R = ${O_P1.r} cm`;
+      ctxP1.font = 'bold 11px Segoe UI';
+      const p1RWidth = ctxP1.measureText(p1RLabel).width;
+      const p1MidX = (O_P1.x + p1EdgeX) / 2;
+      const p1MidY = (O_P1.y + p1EdgeY) / 2;
+      
+      ctxP1.fillStyle = isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.94)';
+      ctxP1.fillRect(p1MidX - 2, p1MidY - 14, p1RWidth + 6, 16);
+      ctxP1.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.4)' : '#cbd5e1';
+      ctxP1.lineWidth = 1;
+      ctxP1.strokeRect(p1MidX - 2, p1MidY - 14, p1RWidth + 6, 16);
+      ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctxP1.fillText(p1RLabel, p1MidX + 1, p1MidY - 2);
+      ctxP1.restore();
+
+      // 3. KIỂM TRA ĐƯỜNG THẲNG ĐÃ ĐƯỢC VẼ VÀO CHƯA
+      if (!P1Elements.line1 && !P1Elements.line2) {
+        ctxP1.save();
+        ctxP1.textAlign = 'center';
+        const boxW = Math.min(widthP1 - 40, 560);
+        const boxH = 46;
+        const boxX = (widthP1 - boxW) / 2;
+        const boxY = heightP1 - 56;
+        ctxP1.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.96)';
+        ctxP1.fillRect(boxX, boxY, boxW, boxH);
+        ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctxP1.lineWidth = 1.5;
+        ctxP1.strokeRect(boxX, boxY, boxW, boxH);
+
+        ctxP1.font = 'bold 12px Segoe UI';
+        ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctxP1.fillText(`👉 Đã vẽ Đường tròn (O, R = ${O_P1.r} cm)! Tiếp tục nhấp "📏 Vẽ Đường thẳng a" trên thanh công cụ!`, widthP1 / 2, boxY + 28);
+        ctxP1.restore();
+
+        document.getElementById('p1Dist').innerText = 'Chưa có đường thẳng';
+        document.getElementById('p1Radius').innerText = `${O_P1.r} cm`;
+        const interVal = document.getElementById('p1Intersections');
+        interVal.innerText = 'Chưa có đường thẳng';
+        interVal.style.color = '#94a3b8';
+        const relVal = document.getElementById('p1Relation');
+        relVal.innerText = 'Vẽ đường thẳng a để khảo sát vị trí tương đối';
+        relVal.style.color = '#94a3b8';
+        return;
+      }
+
+      // 4. TRƯỜNG HỢP CÓ 1 ĐƯỜNG THẲNG a (KHẢO SÁT 3 VỊ TRÍ TƯƠNG ĐỐI & ĐỊNH LÍ 1)
+      if (P1Elements.line1 && !P1Elements.line2) {
+        const lineY = lineY_P1 || (O_P1.y + O_P1.r + 35);
+        lineY_P1 = lineY;
+        const d = Math.abs(lineY - O_P1.y);
+        lineDistP1 = d;
+
+        ctxP1.save();
+        // Vẽ đường thẳng a
+        ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctxP1.lineWidth = 2.5;
+        ctxP1.beginPath(); ctxP1.moveTo(0, lineY); ctxP1.lineTo(widthP1, lineY); ctxP1.stroke();
+
+        ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7'; ctxP1.font = 'bold 12px Segoe UI';
+        ctxP1.fillText('Đường thẳng a', 20, lineY - 8);
+
+        // Tay cầm kéo đường thẳng
+        drawTipHandle(ctxP1, { x: 120, y: lineY }, `↕️ Cầm kéo đường thẳng a (d = ${Math.round(d)} cm)`, '#0284c7');
+
+        // Đoạn vuông góc OH = d từ tâm O tới đường thẳng a
+        ctxP1.strokeStyle = '#fbbf24';
+        ctxP1.lineWidth = 1.8;
+        ctxP1.setLineDash([4, 4]);
+        ctxP1.beginPath(); ctxP1.moveTo(O_P1.x, O_P1.y); ctxP1.lineTo(O_P1.x, lineY); ctxP1.stroke();
+        ctxP1.setLineDash([]);
+
+        // Nhãn khoảng cách d trên đoạn OH
+        const midOH_Y = (O_P1.y + lineY) / 2;
+        ctxP1.font = 'bold 11px Segoe UI';
+        ctxP1.fillStyle = '#fbbf24';
+        ctxP1.fillText(`d = ${Math.round(d)} cm`, O_P1.x + 8, midOH_Y);
+
+        // Điểm H (chân đường vuông góc)
+        const isTangent = Math.abs(d - O_P1.r) <= 1;
+        ctxP1.beginPath(); ctxP1.arc(O_P1.x, lineY, isTangent ? 5.5 : 4, 0, Math.PI * 2);
+        ctxP1.fillStyle = isTangent ? '#10b981' : '#fbbf24';
+        ctxP1.fill();
+        ctxP1.strokeStyle = '#ffffff'; ctxP1.lineWidth = 1.5; ctxP1.stroke();
+
+        ctxP1.fillStyle = isTangent ? '#10b981' : (isDark ? '#f8fafc' : '#0f172a');
+        ctxP1.font = 'bold 12px Segoe UI';
+        ctxP1.fillText(isTangent ? 'Tiếp điểm H' : 'H', O_P1.x + 8, lineY >= O_P1.y ? lineY + 16 : lineY - 8);
+
+        // Ký hiệu góc vuông tại H
+        ctxP1.strokeStyle = isDark ? '#f8fafc' : '#334155'; ctxP1.lineWidth = 1.4;
+        ctxP1.beginPath();
+        const sq = 10;
+        const sgn = lineY >= O_P1.y ? -1 : 1;
+        ctxP1.moveTo(O_P1.x, lineY + sgn * sq);
+        ctxP1.lineTo(O_P1.x + sq, lineY + sgn * sq);
+        ctxP1.lineTo(O_P1.x + sq, lineY);
+        ctxP1.stroke();
+
+        // Banner thông báo kết luận sư phạm dưới đáy
+        const tipW = Math.min(widthP1 - 40, 680);
+        const tipH = 46;
+        const tipX = (widthP1 - tipW) / 2;
+        const tipY = heightP1 - 56;
+        ctxP1.textAlign = 'center';
+
+        document.getElementById('p1Dist').innerText = Math.round(d) + ' cm';
+        document.getElementById('p1Radius').innerText = O_P1.r + ' cm';
+        const interVal = document.getElementById('p1Intersections');
+        const relVal = document.getElementById('p1Relation');
+
+        if (isTangent) {
+          // ===============================
+          // VỊ TRÍ 2: TIẾP XÚC NHAU (d = R)
+          // ===============================
+          ctxP1.fillStyle = isDark ? 'rgba(16, 185, 129, 0.16)' : '#ecfdf5';
+          ctxP1.fillRect(tipX, tipY, tipW, tipH);
+          ctxP1.strokeStyle = isDark ? 'rgba(16, 185, 129, 0.5)' : '#a7f3d0';
+          ctxP1.lineWidth = 1.5;
+          ctxP1.strokeRect(tipX, tipY, tipW, tipH);
+
+          ctxP1.fillStyle = isDark ? '#a7f3d0' : '#065f46';
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.fillText(`🎉 VỊ TRÍ 2: d = R (${O_P1.r} cm) — TIẾP XÚC NHAU! Đường thẳng a là TIẾP TUYẾN tại tiếp điểm H!`, widthP1 / 2, tipY + 18);
+          ctxP1.fillText('Định lí 1: Tiếp tuyến a vuông góc với bán kính OH tại tiếp điểm (a ⊥ OH tại H ∈ (O)).', widthP1 / 2, tipY + 34);
+
+          interVal.innerText = '1 điểm (Tiếp điểm H)';
+          interVal.style.color = '#10b981';
+          relVal.innerText = 'Tiếp xúc nhau (TIẾP TUYẾN: d = R)';
+          relVal.style.color = '#10b981';
+        } 
+        else if (d < O_P1.r) {
+          // ===============================
+          // VỊ TRÍ 3: CẮT NHAU (d < R)
+          // ===============================
+          const dx = Math.sqrt(O_P1.r * O_P1.r - d * d);
+          const ptA = { x: O_P1.x - dx, y: lineY };
+          const ptB = { x: O_P1.x + dx, y: lineY };
+
+          // Nối bán kính OA và OB nét đứt
+          ctxP1.strokeStyle = '#fbbf24';
+          ctxP1.lineWidth = 1.5;
+          ctxP1.setLineDash([4, 4]);
+          ctxP1.beginPath(); ctxP1.moveTo(O_P1.x, O_P1.y); ctxP1.lineTo(ptA.x, ptA.y); ctxP1.stroke();
+          ctxP1.beginPath(); ctxP1.moveTo(O_P1.x, O_P1.y); ctxP1.lineTo(ptB.x, ptB.y); ctxP1.stroke();
+          ctxP1.setLineDash([]);
+
+          // Vẽ 2 giao điểm A và B
+          drawInteractivePoint(ctxP1, ptA, '#f43f5e', 'A', isDark, 6);
+          drawInteractivePoint(ctxP1, ptB, '#f43f5e', 'B', isDark, 6);
+
+          ctxP1.fillStyle = isDark ? 'rgba(244, 63, 94, 0.16)' : '#fff1f2';
+          ctxP1.fillRect(tipX, tipY, tipW, tipH);
+          ctxP1.strokeStyle = isDark ? 'rgba(244, 63, 94, 0.5)' : '#fecdd3';
+          ctxP1.lineWidth = 1.5;
+          ctxP1.strokeRect(tipX, tipY, tipW, tipH);
+
+          ctxP1.fillStyle = isDark ? '#fda4af' : '#9f1239';
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.fillText(`✂️ VỊ TRÍ 3: d < R (${Math.round(d)} cm < ${O_P1.r} cm) — CẮT NHAU tại 2 điểm phân biệt A và B!`, widthP1 / 2, tipY + 18);
+          ctxP1.fillText(`Dây cung AB = ${Math.round(2 * dx)} cm, OH ⊥ AB tại trung điểm H (HA = HB = ${Math.round(dx)} cm). Cầm kéo để đổi vị trí!`, widthP1 / 2, tipY + 34);
+
+          interVal.innerText = `2 điểm (Dây cung AB = ${Math.round(2 * dx)} cm)`;
+          interVal.style.color = '#f43f5e';
+          relVal.innerText = 'Cắt nhau (d < R)';
+          relVal.style.color = '#f43f5e';
+        } 
+        else {
+          // ===============================
+          // VỊ TRÍ 1: KHÔNG GIAO NHAU (d > R)
+          // ===============================
+          ctxP1.fillStyle = isDark ? 'rgba(245, 158, 11, 0.18)' : '#fffbeb';
+          ctxP1.fillRect(tipX, tipY, tipW, tipH);
+          ctxP1.strokeStyle = isDark ? 'rgba(245, 158, 11, 0.5)' : '#fde68a';
+          ctxP1.lineWidth = 1.5;
+          ctxP1.strokeRect(tipX, tipY, tipW, tipH);
+
+          ctxP1.fillStyle = isDark ? '#fef3c7' : '#92400e';
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.fillText(`📍 VỊ TRÍ 1: d > R (${Math.round(d)} cm > ${O_P1.r} cm) — KHÔNG GIAO NHAU (0 điểm chung)!`, widthP1 / 2, tipY + 18);
+          ctxP1.fillText('👉 Bạn có thể CẦM ĐƯỜNG THẲNG hoặc CẦM ĐƯỜNG TRÒN kéo lại gần nhau để khảo sát tiếp xúc và cắt nhau!', widthP1 / 2, tipY + 34);
+
+          interVal.innerText = '0 điểm chung';
+          interVal.style.color = '#94a3b8';
+          relVal.innerText = 'Không giao nhau (d > R)';
+          relVal.style.color = '#94a3b8';
+        }
+
+        ctxP1.restore();
+      } 
+      // 5. TRƯỜNG HỢP CÓ CẢ 2 ĐƯỜNG THẲNG TIẾP TUYẾN (HAI TIẾP TUYẾN CẮT NHAU)
+      else if (P1Elements.line1 && P1Elements.line2) {
+        const res = computeIntersectionFromTangents(angleA_P1, angleB_P1, O_P1);
+        ctxP1.save();
+
+        if (res.isParallel) {
+          // ==========================================
+          // TRƯỜNG HỢP 1: HAI TIẾP TUYẾN SONG SONG
+          // ==========================================
+          const A = res.A, B = res.B;
+          const tanDirX = -Math.sin(angleA_P1);
+          const tanDirY = Math.cos(angleA_P1);
+          const span = Math.max(widthP1, heightP1);
+
+          // Vẽ tiếp tuyến d1 tại A
+          ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+          ctxP1.lineWidth = 2.5;
+          ctxP1.beginPath();
+          ctxP1.moveTo(A.x - span * tanDirX, A.y - span * tanDirY);
+          ctxP1.lineTo(A.x + span * tanDirX, A.y + span * tanDirY);
+          ctxP1.stroke();
+
+          // Vẽ tiếp tuyến d2 tại B
+          ctxP1.beginPath();
+          ctxP1.moveTo(B.x - span * tanDirX, B.y - span * tanDirY);
+          ctxP1.lineTo(B.x + span * tanDirX, B.y + span * tanDirY);
+          ctxP1.stroke();
+
+          // Nhãn tên tiếp tuyến
+          ctxP1.font = 'bold 12px Segoe UI';
+          ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+          ctxP1.fillText('Tiếp tuyến a (d₁)', A.x + 35 * tanDirX, A.y + 35 * tanDirY - 10);
+          ctxP1.fillText('Tiếp tuyến b (d₂)', B.x + 35 * tanDirX, B.y + 35 * tanDirY + 18);
+
+          // Đoạn đường kính AB (nét đứt vàng)
+          ctxP1.strokeStyle = '#fbbf24';
+          ctxP1.lineWidth = 2;
+          ctxP1.setLineDash([5, 4]);
+          ctxP1.beginPath();
+          ctxP1.moveTo(A.x, A.y);
+          ctxP1.lineTo(B.x, B.y);
+          ctxP1.stroke();
+          ctxP1.setLineDash([]);
+
+          // Nhãn bán kính R trên OA và OB
+          ctxP1.fillStyle = '#fbbf24';
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.fillText(`R = ${O_P1.r} cm`, (O_P1.x + A.x) / 2 + 8, (O_P1.y + A.y) / 2 - 4);
+          ctxP1.fillText(`R = ${O_P1.r} cm`, (O_P1.x + B.x) / 2 + 8, (O_P1.y + B.y) / 2 + 14);
+
+          // Ký hiệu vuông góc tại tiếp điểm A và B
+          drawRightAngleDirect(ctxP1, O_P1, A, { x: A.x + 30 * tanDirX, y: A.y + 30 * tanDirY });
+          drawRightAngleDirect(ctxP1, O_P1, B, { x: B.x + 30 * tanDirX, y: B.y + 30 * tanDirY });
+
+          // Vẽ điểm A và B kèm halo chỉ dẫn kéo
+          drawInteractivePoint(ctxP1, A, '#0284c7', 'A (Kéo để xoay tiếp tuyến a)', isDark);
+          drawInteractivePoint(ctxP1, B, '#0284c7', 'B (Kéo để xoay tiếp tuyến b)', isDark);
+
+          // Banner cảnh báo trực quan trên Canvas (bố trí thanh trạng thái dưới đáy bảng vẽ)
+          const boxW = Math.min(widthP1 - 40, 680);
+          const boxH = 46;
+          const boxX = (widthP1 - boxW) / 2;
+          const boxY = heightP1 - 56;
+          ctxP1.fillStyle = isDark ? 'rgba(245, 158, 11, 0.18)' : '#fffbeb';
+          ctxP1.fillRect(boxX, boxY, boxW, boxH);
+          ctxP1.strokeStyle = isDark ? 'rgba(245, 158, 11, 0.5)' : '#fde68a';
+          ctxP1.lineWidth = 1.5;
+          ctxP1.strokeRect(boxX, boxY, boxW, boxH);
+          ctxP1.fillStyle = isDark ? '#fef3c7' : '#92400e';
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.textAlign = 'center';
+          ctxP1.fillText('⚠️ HAI TIẾP TUYẾN SONG SONG: Vì AB là đường kính (∠AOB = 180°),', boxX + boxW / 2, boxY + 18);
+          ctxP1.fillText('hai tiếp tuyến d₁ // d₂ không cắt nhau! Hãy kéo tiếp điểm A hoặc B để chúng cắt nhau!', boxX + boxW / 2, boxY + 34);
+          ctxP1.textAlign = 'left';
+
+          // Cập nhật thông số bên thanh Sidebar
+          document.getElementById('p1Dist').innerText = '100 cm (Khoảng cách d₁ // d₂)';
+          document.getElementById('p1Radius').innerText = `${O_P1.r} cm (OA = OB)`;
+          const interVal = document.getElementById('p1Intersections');
+          interVal.innerText = '0 điểm chung (Song song)';
+          interVal.style.color = '#f59e0b';
+          const relVal = document.getElementById('p1Relation');
+          relVal.innerText = 'd₁ // d₂ (Không thể cắt nhau)';
+          relVal.style.color = '#f59e0b';
+        } 
+        else {
+          // ==========================================
+          // TRƯỜNG HỢP 2: HAI TIẾP TUYẾN HƯỚNG CẮT NHAU
+          // ==========================================
+          const A = res.A, B = res.B, M = res.M;
+          PointM_P1.x = M.x; PointM_P1.y = M.y;
+
+          // Vector từ tiếp điểm đến M
+          const vAM = { x: M.x - A.x, y: M.y - A.y };
+          const lenAM = Math.hypot(vAM.x, vAM.y);
+          const uAM = lenAM > 0 ? { x: vAM.x / lenAM, y: vAM.y / lenAM } : { x: 1, y: 0 };
+
+          const vBM = { x: M.x - B.x, y: M.y - B.y };
+          const lenBM = Math.hypot(vBM.x, vBM.y);
+          const uBM = lenBM > 0 ? { x: vBM.x / lenBM, y: vBM.y / lenBM } : { x: 1, y: 0 };
+
+          // Phần tiếp tuyến kéo dài về phía sau tiếp điểm
+          const backLen = 35;
+          const A_back = { x: A.x - backLen * uAM.x, y: A.y - backLen * uAM.y };
+          const B_back = { x: B.x - backLen * uBM.x, y: B.y - backLen * uBM.y };
+
+          // Phần đầu mút tiếp tuyến vươn dài (độc lập cho từng tiếp tuyến)
+          const factorA = tangentExtendPctA / 100;
+          const factorB = tangentExtendPctB / 100;
+          const T_A = { x: A.x + factorA * vAM.x, y: A.y + factorA * vAM.y };
+          const T_B = { x: B.x + factorB * vBM.x, y: B.y + factorB * vBM.y };
+
+          // Vẽ tiếp tuyến a (qua A) - màu xanh lam
+          ctxP1.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+          ctxP1.lineWidth = 2.5;
+          ctxP1.beginPath();
+          ctxP1.moveTo(A_back.x, A_back.y);
+          ctxP1.lineTo(T_A.x, T_A.y);
+          ctxP1.stroke();
+
+          // Vẽ tiếp tuyến b (qua B) - màu xanh lá
+          ctxP1.strokeStyle = isDark ? '#34d399' : '#059669';
+          ctxP1.lineWidth = 2.5;
+          ctxP1.beginPath();
+          ctxP1.moveTo(B_back.x, B_back.y);
+          ctxP1.lineTo(T_B.x, T_B.y);
+          ctxP1.stroke();
+
+          // Nhãn tiếp tuyến với màu sắc tương ứng
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+          ctxP1.fillText('Tiếp tuyến a (Tia a)', A_back.x - 35 * uAM.x, A_back.y - 12);
+          ctxP1.fillStyle = isDark ? '#34d399' : '#059669';
+          ctxP1.fillText('Tiếp tuyến b (Tia b)', B_back.x - 35 * uBM.x, B_back.y + 18);
+
+          // Bán kính OA, OB (nét đứt vàng)
+          ctxP1.strokeStyle = '#fbbf24';
+          ctxP1.lineWidth = 1.8;
+          ctxP1.setLineDash([5, 4]);
+          ctxP1.beginPath(); ctxP1.moveTo(O_P1.x, O_P1.y); ctxP1.lineTo(A.x, A.y); ctxP1.stroke();
+          ctxP1.beginPath(); ctxP1.moveTo(O_P1.x, O_P1.y); ctxP1.lineTo(B.x, B.y); ctxP1.stroke();
+          ctxP1.setLineDash([]);
+
+          // Nhãn độ dài R trên OA và OB
+          const midA1 = { x: (O_P1.x + A.x) / 2, y: (O_P1.y + A.y) / 2 };
+          const midB1 = { x: (O_P1.x + B.x) / 2, y: (O_P1.y + B.y) / 2 };
+          ctxP1.font = 'bold 11px Segoe UI';
+          ctxP1.fillStyle = '#fbbf24';
+          ctxP1.fillText(`R = ${O_P1.r} cm`, midA1.x - 22, midA1.y - 6);
+          ctxP1.fillText(`R = ${O_P1.r} cm`, midB1.x - 22, midB1.y + 14);
+
+          // Ký hiệu góc vuông tại tiếp điểm A và B
+          drawRightAngleDirect(ctxP1, O_P1, A, M);
+          drawRightAngleDirect(ctxP1, O_P1, B, M);
+
+          const isIntersected = (tangentExtendPctA >= 100 && tangentExtendPctB >= 100);
+
+          if (!isIntersected) {
+            // ĐƯỜNG DỰ PHÓNG NÉT ĐỨT TỚI M
+            if (tangentExtendPctA < 100) {
+              ctxP1.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.45)' : 'rgba(2, 132, 199, 0.45)';
+              ctxP1.lineWidth = 1.5;
+              ctxP1.setLineDash([4, 4]);
+              ctxP1.beginPath(); ctxP1.moveTo(T_A.x, T_A.y); ctxP1.lineTo(M.x, M.y); ctxP1.stroke();
+              ctxP1.setLineDash([]);
+            }
+            if (tangentExtendPctB < 100) {
+              ctxP1.strokeStyle = isDark ? 'rgba(52, 211, 153, 0.45)' : 'rgba(5, 150, 105, 0.45)';
+              ctxP1.lineWidth = 1.5;
+              ctxP1.setLineDash([4, 4]);
+              ctxP1.beginPath(); ctxP1.moveTo(T_B.x, T_B.y); ctxP1.lineTo(M.x, M.y); ctxP1.stroke();
+              ctxP1.setLineDash([]);
+            }
+
+            // Điểm giao dự kiến M (nét đứt mờ)
+            ctxP1.beginPath(); ctxP1.arc(M.x, M.y, 7, 0, Math.PI * 2);
+            ctxP1.strokeStyle = isDark ? '#c084fc' : '#9333ea';
+            ctxP1.setLineDash([3, 3]); ctxP1.stroke(); ctxP1.setLineDash([]);
+            ctxP1.fillStyle = isDark ? '#c084fc' : '#9333ea';
+            ctxP1.font = 'italic 11px Segoe UI';
+            ctxP1.fillText('📍 Giao điểm M dự kiến', M.x + 10, M.y - 8);
+
+            // Đầu mút kéo dài từng tia tiếp tuyến với màu tương ứng
+            drawTipHandle(ctxP1, T_A, `↔️ Kéo tia a (${tangentExtendPctA}%)`, isDark ? '#38bdf8' : '#0284c7');
+            drawTipHandle(ctxP1, T_B, `↔️ Kéo tia b (${tangentExtendPctB}%)`, isDark ? '#34d399' : '#059669');
+
+            // Cập nhật thông số và Banner hướng dẫn
+            document.getElementById('p1Dist').innerText = 'Đang kéo từng tiếp tuyến...';
+            document.getElementById('p1Radius').innerText = `${O_P1.r} cm (OA = OB)`;
+            const interVal = document.getElementById('p1Intersections');
+            interVal.innerText = `Chưa cắt (a: ${tangentExtendPctA}%, b: ${tangentExtendPctB}%)`;
+            interVal.style.color = '#f59e0b';
+            const relVal = document.getElementById('p1Relation');
+            
+            let bannerMsg1 = '';
+            let bannerMsg2 = '';
+            if (tangentExtendPctA < 100 && tangentExtendPctB < 100) {
+              relVal.innerText = 'Kéo cả 2 tiếp tuyến chạm điểm M để tạo giao điểm';
+              bannerMsg1 = `✂️ CHƯA CẮT NHAU: Hãy kéo Tiếp tuyến a (hiện ${tangentExtendPctA}%) và Tiếp tuyến b (hiện ${tangentExtendPctB}%) dài ra`;
+              bannerMsg2 = 'để cả 2 cùng chạm vào điểm M dự kiến và tạo thành 2 tiếp tuyến cắt nhau!';
+            } else if (tangentExtendPctA >= 100 && tangentExtendPctB < 100) {
+              relVal.innerText = `Tia a đã tới vị trí giao, hãy kéo tiếp tia b (hiện ${tangentExtendPctB}%)`;
+              bannerMsg1 = `📏 TIẾP TUYẾN a ĐÃ VƯƠN TỚI M (${tangentExtendPctA}%), NHƯNG TIẾP TUYẾN b MỚI ĐẠT ${tangentExtendPctB}%!`;
+              bannerMsg2 = '👉 Hãy kéo tiếp tuyến b dài thêm để chúng chính thức cắt nhau tại điểm M!';
+            } else {
+              relVal.innerText = `Tia b đã tới vị trí giao, hãy kéo tiếp tia a (hiện ${tangentExtendPctA}%)`;
+              bannerMsg1 = `📐 TIẾP TUYẾN b ĐÃ VƯƠN TỚI M (${tangentExtendPctB}%), NHƯNG TIẾP TUYẾN a MỚI ĐẠT ${tangentExtendPctA}%!`;
+              bannerMsg2 = '👉 Hãy kéo tiếp tuyến a dài thêm để chúng chính thức cắt nhau tại điểm M!';
+            }
+            relVal.style.color = '#f59e0b';
+
+            // Vẽ banner hướng dẫn sinh động trên canvas (bố trí thanh trạng thái dưới đáy)
+            const bW = Math.min(widthP1 - 40, 680);
+            const bH = 46;
+            const bX = (widthP1 - bW) / 2;
+            const bY = heightP1 - 56;
+            ctxP1.fillStyle = isDark ? 'rgba(245, 158, 11, 0.18)' : '#fffbeb';
+            ctxP1.fillRect(bX, bY, bW, bH);
+            ctxP1.strokeStyle = isDark ? 'rgba(245, 158, 11, 0.5)' : '#fde68a';
+            ctxP1.lineWidth = 1.5;
+            ctxP1.strokeRect(bX, bY, bW, bH);
+            ctxP1.fillStyle = isDark ? '#fef3c7' : '#92400e';
+            ctxP1.font = 'bold 11px Segoe UI';
+            ctxP1.textAlign = 'center';
+            ctxP1.fillText(bannerMsg1, bX + bW / 2, bY + 18);
+            ctxP1.fillText(bannerMsg2, bX + bW / 2, bY + 34);
+            ctxP1.textAlign = 'left';
+          } 
+          else {
+            // ĐÃ CẮT NHAU TẠI M (cả 2 >= 100%)
+            // Tia phân giác OM (nét đứt tím)
+            ctxP1.strokeStyle = '#c084fc';
+            ctxP1.lineWidth = 2;
+            ctxP1.setLineDash([5, 5]);
+            ctxP1.beginPath(); ctxP1.moveTo(M.x, M.y); ctxP1.lineTo(O_P1.x, O_P1.y); ctxP1.stroke();
+            ctxP1.setLineDash([]);
+
+            // Đoạn nối 2 tiếp điểm AB (nét đứt xám)
+            ctxP1.strokeStyle = isDark ? '#64748b' : '#94a3b8';
+            ctxP1.lineWidth = 1.3;
+            ctxP1.setLineDash([3, 3]);
+            ctxP1.beginPath(); ctxP1.moveTo(A.x, A.y); ctxP1.lineTo(B.x, B.y); ctxP1.stroke();
+            ctxP1.setLineDash([]);
+
+            // Góc vuông tại giao điểm OM và AB
+            const midAB = { x: (A.x + B.x) / 2, y: (A.y + B.y) / 2 };
+            drawRightAngleDirect(ctxP1, O_P1, midAB, A);
+
+            // Cung đánh dấu góc phân giác tại M và tại O
+            drawBisectorArcs(ctxP1, M, O_P1, A, B, isDark);
+
+            // Điểm giao nhau M (tím nổi bật)
+            drawInteractivePoint(ctxP1, M, '#a855f7', `M (MA = MB = ${Math.round(res.tangentLen)} cm)`, isDark, 7);
+
+            // Nếu kéo dài vượt quá 105%, vẽ handle đầu mút để có thể thu ngắn lại
+            if (tangentExtendPctA > 105) {
+              drawTipHandle(ctxP1, T_A, `Tia a: ${tangentExtendPctA}%`, isDark ? '#38bdf8' : '#0284c7');
+            }
+            if (tangentExtendPctB > 105) {
+              drawTipHandle(ctxP1, T_B, `Tia b: ${tangentExtendPctB}%`, isDark ? '#34d399' : '#059669');
+            }
+
+            // Banner chúc mừng thành công (bố trí thanh trạng thái dưới đáy)
+            const bW = Math.min(widthP1 - 40, 680);
+            const bH = 46;
+            const bX = (widthP1 - bW) / 2;
+            const bY = heightP1 - 56;
+            ctxP1.fillStyle = isDark ? 'rgba(16, 185, 129, 0.16)' : '#ecfdf5';
+            ctxP1.fillRect(bX, bY, bW, bH);
+            ctxP1.strokeStyle = isDark ? 'rgba(16, 185, 129, 0.5)' : '#a7f3d0';
+            ctxP1.lineWidth = 1.5;
+            ctxP1.strokeRect(bX, bY, bW, bH);
+            ctxP1.fillStyle = isDark ? '#a7f3d0' : '#065f46';
+            ctxP1.font = 'bold 11px Segoe UI';
+            ctxP1.textAlign = 'center';
+            ctxP1.fillText(`🎉 XUẤT SẮC! HAI TIẾP TUYẾN ĐÃ CẮT NHAU TẠI M (MA = MB = ${Math.round(res.tangentLen)} cm)`, bX + bW / 2, bY + 18);
+            ctxP1.fillText('Định lí 2: Điểm M cách đều 2 tiếp điểm, tia MO là phân giác ∠AMB, OM ⊥ AB!', bX + bW / 2, bY + 34);
+            ctxP1.textAlign = 'left';
+
+            // Cập nhật thông số
+            document.getElementById('p1Dist').innerText = `${Math.round(res.d)} cm (OM)`;
+            document.getElementById('p1Radius').innerText = `${O_P1.r} cm (OA = OB)`;
+            const interVal = document.getElementById('p1Intersections');
+            interVal.innerText = `${Math.round(res.tangentLen)} cm (MA = MB)`;
+            interVal.style.color = '#10b981';
+            const relVal = document.getElementById('p1Relation');
+            relVal.innerText = 'MA = MB | MO phân giác | OM ⊥ AB';
+            relVal.style.color = '#10b981';
+          }
+
+          // Vẽ điểm A và B
+          drawInteractivePoint(ctxP1, A, '#0284c7', 'A (Kéo để xoay tiếp tuyến a)', isDark);
+          drawInteractivePoint(ctxP1, B, '#059669', 'B (Kéo để xoay tiếp tuyến b)', isDark);
+        }
+
+        ctxP1.restore();
+      }
+    }
+
+    function drawRightAngleDirect(context, P1, V, P2) {
+      const v1 = { x: P1.x - V.x, y: P1.y - V.y };
+      const l1 = Math.hypot(v1.x, v1.y);
+      if (l1 === 0) return;
+      const u1 = { x: (v1.x / l1) * 9, y: (v1.y / l1) * 9 };
+
+      const v2 = { x: P2.x - V.x, y: P2.y - V.y };
+      const l2 = Math.hypot(v2.x, v2.y);
+      if (l2 === 0) return;
+      const u2 = { x: (v2.x / l2) * 9, y: (v2.y / l2) * 9 };
+
+      context.strokeStyle = document.body.classList.contains('dark-theme') ? '#e2e8f0' : '#475569';
+      context.lineWidth = 1.3;
+      context.beginPath();
+      context.moveTo(V.x + u1.x, V.y + u1.y);
+      context.lineTo(V.x + u1.x + u2.x, V.y + u1.y + u2.y);
+      context.lineTo(V.x + u2.x, V.y + u2.y);
+      context.stroke();
+    }
+
+    function drawInteractivePoint(context, pt, color, label, isDark, r = 5.5) {
+      context.beginPath();
+      context.arc(pt.x, pt.y, r + 4, 0, Math.PI * 2);
+      context.fillStyle = color === '#a855f7' ? 'rgba(168, 85, 247, 0.22)' : 'rgba(2, 132, 199, 0.2)';
+      context.fill();
+
+      context.beginPath();
+      context.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+      context.fillStyle = color;
+      context.fill();
+      context.strokeStyle = '#ffffff';
+      context.lineWidth = 1.8;
+      context.stroke();
+
+      if (label) {
+        context.font = 'bold 11px Segoe UI';
+        const txtW = context.measureText(label).width;
+        const lx = pt.x + 10;
+        const ly = pt.y - 10;
+
+        context.fillStyle = isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.94)';
+        context.fillRect(lx - 4, ly - 12, txtW + 8, 16);
+        context.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.4)' : '#cbd5e1';
+        context.lineWidth = 1;
+        context.strokeRect(lx - 4, ly - 12, txtW + 8, 16);
+
+        context.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+        context.fillText(label, lx, ly);
+      }
+    }
+
+    function distToSegment(p, a, b) {
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const l2 = dx * dx + dy * dy;
+      if (l2 === 0) return dist(p, a);
+      let t = ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2;
+      t = Math.max(0, Math.min(1, t));
+      return dist(p, { x: a.x + t * dx, y: a.y + t * dy });
+    }
+
+    function drawTipHandle(context, pt, label, color) {
+      const c = color || '#0ea5e9';
+      context.beginPath();
+      context.arc(pt.x, pt.y, 8, 0, Math.PI * 2);
+      context.fillStyle = c;
+      context.fill();
+      context.strokeStyle = '#ffffff';
+      context.lineWidth = 2;
+      context.stroke();
+
+      context.beginPath();
+      context.arc(pt.x, pt.y, 13, 0, Math.PI * 2);
+      context.strokeStyle = c;
+      context.lineWidth = 1.8;
+      context.stroke();
+
+      if (label) {
+        context.font = 'bold 11px Segoe UI';
+        const txtW = context.measureText(label).width;
+        const lx = pt.x + 14;
+        const ly = pt.y - 12;
+
+        context.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        context.fillRect(lx - 4, ly - 12, txtW + 10, 18);
+        context.strokeStyle = c;
+        context.lineWidth = 1.2;
+        context.strokeRect(lx - 4, ly - 12, txtW + 10, 18);
+
+        context.fillStyle = '#ffffff';
+        context.fillText(label, lx + 2, ly + 2);
+      }
+    }
+
+    function drawBisectorArcs(context, M, O, A, B, isDark) {
+      const angMO = Math.atan2(O.y - M.y, O.x - M.x);
+      const angMA = Math.atan2(A.y - M.y, A.x - M.x);
+      const angMB = Math.atan2(B.y - M.y, B.x - M.x);
+
+      context.strokeStyle = '#c084fc';
+      context.lineWidth = 1.4;
+
+      const arcR = 24;
+      context.beginPath();
+      context.arc(M.x, M.y, arcR, Math.min(angMO, angMA), Math.max(angMO, angMA));
+      context.stroke();
+
+      context.beginPath();
+      context.arc(M.x, M.y, arcR + 4, Math.min(angMO, angMB), Math.max(angMO, angMB));
+      context.stroke();
+    }
+
+    function getP1Pos(e) {
+      const rect = canvasP1.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function handleP1Start(p) {
+      if (!P1Elements.circle) return;
+
+      if (!P1Elements.line2) {
+        const curLineY = lineY_P1 || (O_P1.y + O_P1.r + 35);
+        const nearCenterO = dist(p, O_P1) < 24;
+        const nearLine = P1Elements.line1 && Math.abs(p.y - curLineY) < 22;
+        const onCircle = dist(p, O_P1) <= O_P1.r + 10;
+
+        if (nearCenterO) {
+          isDraggingCircleP1 = true;
+          dragCircleOffset = { x: p.x - O_P1.x, y: p.y - O_P1.y };
+          return;
+        }
+        if (nearLine) {
+          isDraggingLineP1 = true;
+          dragLineOffsetY = p.y - curLineY;
+          return;
+        }
+        if (onCircle) {
+          isDraggingCircleP1 = true;
+          dragCircleOffset = { x: p.x - O_P1.x, y: p.y - O_P1.y };
+          return;
+        }
+      } else {
+        // Chế độ 2 tiếp tuyến cắt nhau
+        const res = computeIntersectionFromTangents(angleA_P1, angleB_P1, O_P1);
+        const A = res.A, B = res.B, M = res.M;
+
+        if (dist(p, A) < 24) {
+          isDraggingA_P1 = true;
+          return;
+        }
+        if (dist(p, B) < 24) {
+          isDraggingB_P1 = true;
+          return;
+        }
+
+        if (res.M) {
+          const vAM = { x: M.x - A.x, y: M.y - A.y };
+          const vBM = { x: M.x - B.x, y: M.y - B.y };
+          const fA = tangentExtendPctA / 100;
+          const fB = tangentExtendPctB / 100;
+          const TA = { x: A.x + fA * vAM.x, y: A.y + fA * vAM.y };
+          const TB = { x: B.x + fB * vBM.x, y: B.y + fB * vBM.y };
+
+          const dTipA = dist(p, TA);
+          const dTipB = dist(p, TB);
+          const dBodyA = distToSegment(p, A, TA);
+          const dBodyB = distToSegment(p, B, TB);
+
+          // Nếu đang ở chế độ kéo điểm M và người dùng click vào M
+          const isIntersected = (tangentExtendPctA >= 100 && tangentExtendPctB >= 100);
+          if (p1Step3Mode === 'pointM' && dist(p, M) < 26) {
+            PointM_P1.isDragging = true;
+            return;
+          }
+
+          // Ưu tiên nắm đầu mút tiếp tuyến từng bên
+          if (dTipA < 24 && dTipA <= dTipB) {
+            isDraggingTipA = true;
+            return;
+          }
+          if (dTipB < 24) {
+            isDraggingTipB = true;
+            return;
+          }
+
+          // Kéo theo thân tiếp tuyến từng bên
+          if (dBodyA < 18 && dBodyA <= dBodyB) {
+            isDraggingTipA = true;
+            return;
+          }
+          if (dBodyB < 18) {
+            isDraggingTipB = true;
+            return;
+          }
+
+          // Nếu cả 2 đã cắt nhau tại M và click vào M
+          if (isIntersected && dist(p, M) < 26) {
+            PointM_P1.isDragging = true;
+            return;
+          }
+        }
+
+        // Nắm thẳng vào hình tròn (trong hoặc trên chu vi) để kéo đường tròn
+        if (dist(p, O_P1) <= O_P1.r + 10) {
+          isDraggingCircleP1 = true;
+          dragCircleOffset = { x: p.x - O_P1.x, y: p.y - O_P1.y };
+          return;
+        }
+      }
+    }
+
+    function handleP1Move(p) {
+      if (isDraggingCircleP1) {
+        let targetX = p.x - dragCircleOffset.x;
+        let targetY = p.y - dragCircleOffset.y;
+        targetX = Math.max(O_P1.r + 20, Math.min(widthP1 - O_P1.r - 20, targetX));
+        targetY = Math.max(O_P1.r + 20, Math.min(heightP1 - O_P1.r - 20, targetY));
+
+        if (P1Elements.line1 && !P1Elements.line2) {
+          const curLineY = lineY_P1 || (targetY + O_P1.r + 35);
+          // Hút dính từ tính (Magnetic Snap) khi d gần bằng R để dễ đạt chính xác tiếp xúc d = R
+          const curD = Math.abs(curLineY - targetY);
+          if (Math.abs(curD - O_P1.r) <= 3.5) {
+            targetY = curLineY > targetY ? (curLineY - O_P1.r) : (curLineY + O_P1.r);
+          }
+        }
+        O_P1.x = targetX;
+        O_P1.y = targetY;
+        drawP1();
+      } else if (isDraggingLineP1) {
+        let targetLineY = p.y - dragLineOffsetY;
+        targetLineY = Math.max(25, Math.min(heightP1 - 65, targetLineY));
+
+        // Hút dính từ tính (Magnetic Snap) khi d gần bằng R
+        const curD = Math.abs(targetLineY - O_P1.y);
+        if (Math.abs(curD - O_P1.r) <= 3.5) {
+          targetLineY = targetLineY > O_P1.y ? (O_P1.y + O_P1.r) : (O_P1.y - O_P1.r);
+        }
+        lineY_P1 = targetLineY;
+        lineDistP1 = Math.abs(lineY_P1 - O_P1.y);
+        drawP1();
+      } else if (isDraggingA_P1) {
+        angleA_P1 = Math.atan2(p.y - O_P1.y, p.x - O_P1.x);
+        drawP1();
+      } else if (isDraggingB_P1) {
+        angleB_P1 = Math.atan2(p.y - O_P1.y, p.x - O_P1.x);
+        drawP1();
+      } else if (isDraggingTipA) {
+        const res = computeIntersectionFromTangents(angleA_P1, angleB_P1, O_P1);
+        if (res.M) {
+          const vAM = { x: res.M.x - res.A.x, y: res.M.y - res.A.y };
+          const lenAM = Math.hypot(vAM.x, vAM.y);
+          if (lenAM > 0) {
+            const uAM = { x: vAM.x / lenAM, y: vAM.y / lenAM };
+            const proj = (p.x - res.A.x) * uAM.x + (p.y - res.A.y) * uAM.y;
+            let newPct = Math.round((proj / lenAM) * 100);
+            newPct = Math.max(20, Math.min(140, newPct));
+            tangentExtendPctA = newPct;
+            const sA = document.getElementById('sliderExtendA');
+            if (sA) sA.value = newPct;
+            const lA = document.getElementById('lblExtendA');
+            if (lA) lA.innerText = newPct + '%';
+            drawP1();
+          }
+        }
+      } else if (isDraggingTipB) {
+        const res = computeIntersectionFromTangents(angleA_P1, angleB_P1, O_P1);
+        if (res.M) {
+          const vBM = { x: res.M.x - res.B.x, y: res.M.y - res.B.y };
+          const lenBM = Math.hypot(vBM.x, vBM.y);
+          if (lenBM > 0) {
+            const uBM = { x: vBM.x / lenBM, y: vBM.y / lenBM };
+            const proj = (p.x - res.B.x) * uBM.x + (p.y - res.B.y) * uBM.y;
+            let newPct = Math.round((proj / lenBM) * 100);
+            newPct = Math.max(20, Math.min(140, newPct));
+            tangentExtendPctB = newPct;
+            const sB = document.getElementById('sliderExtendB');
+            if (sB) sB.value = newPct;
+            const lB = document.getElementById('lblExtendB');
+            if (lB) lB.innerText = newPct + '%';
+            drawP1();
+          }
+        }
+      } else if (PointM_P1.isDragging) {
+        if (dist(p, O_P1) > O_P1.r + 20) {
+          PointM_P1.x = p.x;
+          PointM_P1.y = p.y;
+          const t = computeTangents(PointM_P1, O_P1);
+          if (t) {
+            angleA_P1 = Math.atan2(t.A.y - O_P1.y, t.A.x - O_P1.x);
+            angleB_P1 = Math.atan2(t.B.y - O_P1.y, t.B.x - O_P1.x);
+          }
+          drawP1();
+        }
+      } else if (canvasP1) {
+        if (!P1Elements.circle) {
+          canvasP1.style.cursor = 'default';
+        } else if (P1Elements.line2) {
+          const res = computeIntersectionFromTangents(angleA_P1, angleB_P1, O_P1);
+          const fA = tangentExtendPctA / 100;
+          const fB = tangentExtendPctB / 100;
+          const vAM = res.M ? { x: res.M.x - res.A.x, y: res.M.y - res.A.y } : { x: 0, y: 0 };
+          const vBM = res.M ? { x: res.M.x - res.B.x, y: res.M.y - res.B.y } : { x: 0, y: 0 };
+          const TA = res.M ? { x: res.A.x + fA * vAM.x, y: res.A.y + fA * vAM.y } : res.A;
+          const TB = res.M ? { x: res.B.x + fB * vBM.x, y: res.B.y + fB * vBM.y } : res.B;
+
+          if (dist(p, res.A) < 22 || dist(p, res.B) < 22 || dist(p, TA) < 22 || dist(p, TB) < 22 || (res.M && dist(p, res.M) < 24) || dist(p, O_P1) <= O_P1.r + 10) {
+            canvasP1.style.cursor = 'grab';
+          } else {
+            canvasP1.style.cursor = 'default';
+          }
+        } else if (P1Elements.line1) {
+          const curLineY = lineY_P1 || (O_P1.y + O_P1.r + 35);
+          if (Math.abs(p.y - curLineY) < 22) {
+            canvasP1.style.cursor = 'ns-resize';
+          } else if (dist(p, O_P1) <= O_P1.r + 10) {
+            canvasP1.style.cursor = 'grab';
+          } else {
+            canvasP1.style.cursor = 'default';
+          }
+        } else if (dist(p, O_P1) <= O_P1.r + 10) {
+          canvasP1.style.cursor = 'grab';
+        } else {
+          canvasP1.style.cursor = 'default';
+        }
+      }
+    }
+
+    function handleP1End() {
+      isDraggingCircleP1 = false;
+      isDraggingLineP1 = false;
+      isDraggingA_P1 = false;
+      isDraggingB_P1 = false;
+      isDraggingTipA = false;
+      isDraggingTipB = false;
+      PointM_P1.isDragging = false;
+      if (canvasP1) canvasP1.style.cursor = 'default';
+    }
+
+    canvasP1.addEventListener('mousedown', (e) => handleP1Start(getP1Pos(e)));
+    window.addEventListener('mousemove', (e) => {
+      if (!canvasP1) return;
+      handleP1Move(getP1Pos(e));
+    });
+    window.addEventListener('mouseup', handleP1End);
+
+    // Cảm ứng điện thoại / bảng thông minh
+    canvasP1.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      handleP1Start(getP1Pos(e));
+    }, { passive: false });
+    window.addEventListener('touchmove', (e) => {
+      if (isDraggingCircleP1 || isDraggingLineP1 || isDraggingA_P1 || isDraggingB_P1 || isDraggingTipA || isDraggingTipB || PointM_P1.isDragging) {
+        e.preventDefault();
+      }
+      handleP1Move(getP1Pos(e));
+    }, { passive: false });
+    window.addEventListener('touchend', handleP1End);
+
+    // ==========================================
+    // KHỞI TẠO THANH CÔNG CỤ HÌNH HỌC KHÁM PHÁ (DRAG & DROP)
+    // ==========================================
+    const p1ItemC = document.getElementById('p1DragItemCircle');
+    const p1ItemL1 = document.getElementById('p1DragItemLine1');
+    const p1ItemL2 = document.getElementById('p1DragItemLine2');
+    const p1Wrap = document.getElementById('canvasWrapperP1');
+
+    if (p1ItemC) {
+      p1ItemC.addEventListener('dragstart', (e) => {
+        draggedP1Type = 'circle';
+        e.dataTransfer.setData('text/plain', 'circle');
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      p1ItemC.addEventListener('click', () => toggleP1Element('circle'));
+    }
+
+    if (p1ItemL1) {
+      p1ItemL1.addEventListener('dragstart', (e) => {
+        draggedP1Type = 'line1';
+        e.dataTransfer.setData('text/plain', 'line1');
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      p1ItemL1.addEventListener('click', () => toggleP1Element('line1'));
+    }
+
+    if (p1ItemL2) {
+      p1ItemL2.addEventListener('dragstart', (e) => {
+        draggedP1Type = 'line2';
+        e.dataTransfer.setData('text/plain', 'line2');
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      p1ItemL2.addEventListener('click', () => toggleP1Element('line2'));
+    }
+
+    if (p1Wrap) {
+      p1Wrap.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        p1Wrap.classList.add('drag-over');
+      });
+      p1Wrap.addEventListener('dragleave', () => {
+        p1Wrap.classList.remove('drag-over');
+      });
+      p1Wrap.addEventListener('drop', (e) => {
+        e.preventDefault();
+        p1Wrap.classList.remove('drag-over');
+        const rect = canvasP1.getBoundingClientRect();
+        const dropX = e.clientX - rect.left;
+        const dropY = e.clientY - rect.top;
+
+        if (draggedP1Type) {
+          deployP1Element(draggedP1Type, dropX, dropY);
+          draggedP1Type = null;
+        }
+      });
+    }
+
+    // ==========================================
+    // PERIOD 2: 3 EXPERT GROUPS ENGINE
+    // ==========================================
+    const O = { x: 0, y: 0, r: 50 };
+    const Cam1 = { x: 0, y: 0, isDragging: false, color: '#38bdf8', label: 'Camera M₁', isDeployed: false };
+    const Cam2 = { x: 0, y: 0, isDragging: false, color: '#10b981', label: 'Camera M₂', isDeployed: false };
+    const TargetDiamond = { x: 0, y: 0, isDragging: false, r: 16 };
+
+    let width = 0, height = 0;
+    let latestSnapshotDataUrl = '';
+
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('canvasWrapper');
+    const missionModal = document.getElementById('missionModalOverlay');
+
+    function openMissionModal(expertNum) {
+      currentExpert = expertNum;
+      const title = document.getElementById('dispatchModalTitle');
+      const targetGroup = document.getElementById('dispatchTargetGroup');
+      const goalTitle = document.getElementById('dispatchGoalTitle');
+      const goalText = document.getElementById('dispatchGoalText');
+      const tasksList = document.getElementById('dispatchTasksList');
+      const sectionBox = document.getElementById('dispatchSectionBox');
+
+      if (expertNum === 1) {
+        title.innerHTML = '🚨 LỆNH ĐIỀU PHỐI NHIỆM VỤ SỐ 01 (NHÓM 1)';
+        targetGroup.innerText = 'Nhóm 1 - Chuyên Gia Quang Học & Độ Phủ 100%';
+        targetGroup.style.color = '#38bdf8';
+        sectionBox.style.borderLeftColor = '#38bdf8';
+        goalTitle.innerText = 'MỤC TIÊU CHIẾN LƯỢC: TỰ TÌM VỊ TRÍ TRIỆT TIÊU 100% ĐIỂM MÙ';
+        goalText.innerText = 'Bảo tàng yêu cầu xóa sổ hoàn toàn điểm mù quanh cột tròn bê tông (R = 50cm). Bạn được cấp tối đa 2 Camera. Hãy tự do kéo thả, thử nghiệm các vị trí đặt camera để tìm ra cấu hình đạt độ phủ 100% và dùng Định lí 1 & 2 (Bài 16) để bảo vệ giải pháp của nhóm!';
+
+        tasksList.innerHTML = `
+          <div class="dispatch-task-item">
+            <div class="task-bullet">1</div>
+            <div><b>Khám phá ban đầu (Thực nghiệm sai lầm):</b> Kéo thả 2 Camera từ kho thiết bị vào sảnh. Thử đặt cả 2 camera cùng một phía của cột tròn và quan sát: <i>Vì sao vùng mù màu đỏ phía sau cột vẫn xuất hiện rất lớn?</i></div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">2</div>
+            <div><b>Tự do tìm tòi vị trí triệt tiêu điểm mù:</b> Di chuyển tự do 2 camera quanh phòng với các góc khác nhau cho đến khi <b>Thước đo Độ phủ an ninh đạt 100%</b> (vùng mù biến mất hoàn toàn). Ghi lại: <i>Góc lệch giữa 2 camera lúc này là bao nhiêu độ?</i></div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">3</div>
+            <div><b>Vận dụng Định lí Toán học 9 để chứng minh:</b> Bật các tia tiếp tuyến và bán kính nét đứt. Dùng <b>Định lí 1</b> (OA ⊥ M₁A) và <b>Định lí 2</b> (tính chất 2 tiếp tuyến cắt nhau tại M₁, M₂) để lập luận: <i>Vì sao hai chùm tiếp tuyến đan chéo nhau có thể ôm trọn 360° chu vi cột mà không để hở góc chết nào?</i></div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">4</div>
+            <div><b>Chụp ảnh & Tranh biện khoa học:</b> Chụp ảnh sơ đồ tối ưu của nhóm, chuyển sang Tab Báo Cáo để hoàn thiện bài thuyết trình 2 phút bảo vệ trước Hội đồng giám khảo.</div>
+          </div>
+        `;
+      } else if (expertNum === 2) {
+        title.innerHTML = '🚨 LỆNH ĐIỀU PHỐI NHIỆM VỤ SỐ 02 (NHÓM 2)';
+        targetGroup.innerText = 'Nhóm 2 - Chuyên Gia Tối Ưu Chi Phí & Ngân Sách';
+        targetGroup.style.color = '#10b981';
+        sectionBox.style.borderLeftColor = '#10b981';
+        goalTitle.innerText = 'MỤC TIÊU CHIẾN LƯỢC: KHÁM PHÁ QUY LUẬT THU HẸP VÙNG MÙ VỚI 1 CAMERA';
+        goalText.innerText = 'Ngân sách có hạn, Ban Giám Đốc chỉ duyệt mua đúng 01 Camera duy nhất! Hãy thực nghiệm kéo camera để tìm khoảng cách đặt camera M₁ sao cho diện tích vùng mù phía sau cột tròn đạt mức nhỏ nhất.';
+
+        tasksList.innerHTML = `
+          <div class="dispatch-task-item">
+            <div class="task-bullet">1</div>
+            <div><b>Thực nghiệm thay đổi cự ly:</b> Kéo Camera M₁ từ sát thân cột lùi dần ra xa bức tường đối diện. Quan sát sự thay đổi liên tục của góc quét ∠AMB và diện tích vùng mù màu đỏ.</div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">2</div>
+            <div><b>Phát hiện quy luật giới hạn:</b> Càng lùi xa cột, diện tích vùng mù biến đổi như thế nào? Có thể triệt tiêu 100% vùng mù chỉ với 1 camera được không? Tại sao?</div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">3</div>
+            <div><b>Vận dụng Định lí 1 & Hệ thức lượng Toán 9:</b> Dùng hệ thức sin(∠AMB/2) = R / OM₁ trong tam giác vuông OAM₁ để giải thích vì sao khi OM₁ càng lớn thì hai tiếp tuyến tiến dần về song song và vùng mù thu hẹp tiệm cận về bề rộng 2R (đúng bằng đường kính cột).</div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">4</div>
+            <div><b>Đề xuất phương án tối ưu:</b> Chụp ảnh cấu hình tiết kiệm nhất và hoàn thiện bài báo cáo kinh tế - kỹ thuật gửi Hội đồng.</div>
+          </div>
+        `;
+      } else if (expertNum === 3) {
+        title.innerHTML = '🚨 LỆNH ĐIỀU PHỐI NHIỆM VỤ SỐ 03 (NHÓM 3)';
+        targetGroup.innerText = 'Nhóm 3 - Chuyên Gia Bảo Vệ Cổ Vật Quý Giá';
+        targetGroup.style.color = '#f59e0b';
+        sectionBox.style.borderLeftColor = '#f59e0b';
+        goalTitle.innerText = 'MỤC TIÊU CHIẾN LƯỢC: XÁC ĐỊNH RANH GIỚI BẢO VỆ MỤC TIÊU KHÔNG BỊ KHUẤT';
+        goalText.innerText = 'Tủ kính trưng bày Viên Kim Cương 💎 đặt tại điểm K. Hãy di chuyển Camera M₁ quanh phòng để phát hiện ranh giới chính xác giữa vùng nhìn thấy và vùng bị cột tròn che khuất, vận dụng tính chất tiếp tuyến để bảo vệ tuyệt đối cổ vật.';
+
+        tasksList.innerHTML = `
+          <div class="dispatch-task-item">
+            <div class="task-bullet">1</div>
+            <div><b>Khảo sát vùng che khuất:</b> Kéo Camera M₁ di chuyển quanh phòng và quan sát đường nối thẳng M₁K. Khi nào còi báo động đỏ vang lên báo hiệu tầm nhìn bị cột tròn cản trở?</div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">2</div>
+            <div><b>Phát hiện vị trí ranh giới tới hạn:</b> Rê camera chầm chậm đến vị trí ranh giới vừa chuyển từ BÁO ĐỘNG sang AN TOÀN. Lúc này đoạn nối thẳng M₁K có vị trí hình học đặc biệt gì đối với đường tròn thân cột (O)?</div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">3</div>
+            <div><b>Vận dụng Vị trí tương đối đường thẳng và đường tròn (Bài 16):</b> So sánh khoảng cách d(O, M₁K) với bán kính R để phân loại 3 trạng thái: d < R (cắt đường tròn - bị che), d = R (tiếp tuyến - ranh giới tới hạn), d > R (không giao nhau - tầm nhìn thông suốt 100%).</div>
+          </div>
+          <div class="dispatch-task-item">
+            <div class="task-bullet">4</div>
+            <div><b>Khóa mục tiêu an toàn & Xuất báo cáo:</b> Xác định toạ độ an toàn cho Camera M₁ và lập phương án an ninh nộp cho Ban Quản lý bảo tàng.</div>
+          </div>
+        `;
+      }
+
+      missionModal.style.display = 'flex';
+    }
+
+    function closeMissionModal() {
+      missionModal.style.display = 'none';
+    }
+
+    function acceptAndStartMission() {
+      closeMissionModal();
+      selectExpert(currentExpert);
+      switchTab('tabWorkspace');
+    }
+
+    document.getElementById('btnOpenMissionModal').addEventListener('click', () => {
+      openMissionModal(currentExpert);
+    });
+
+    function selectExpert(expertNum) {
+      currentExpert = expertNum;
+
+      // Đưa camera về kho thiết bị để học sinh tự tay kéo thả vào sảnh
+      Cam1.isDeployed = false;
+      Cam2.isDeployed = false;
+
+      const ind = document.getElementById('headerGroupIndicator');
+      if (ind) {
+        if (currentExpert === 1) { ind.innerText = '🔵 Nhóm 1'; ind.style.color = '#38bdf8'; }
+        if (currentExpert === 2) { ind.innerText = '🟢 Nhóm 2'; ind.style.color = '#10b981'; }
+        if (currentExpert === 3) { ind.innerText = '🟠 Nhóm 3'; ind.style.color = '#f59e0b'; }
+      }
+
+      document.querySelectorAll('.role-btn').forEach((b, idx) => {
+        b.classList.toggle('active', idx + 1 === currentExpert);
+      });
+
+      const hudTitle = document.getElementById('hudTitle');
+      const hudDesc = document.getElementById('hudDesc');
+      const sideTitle = document.getElementById('sideExpertTitle');
+      const missionPrompt = document.getElementById('missionPrompt');
+      const mathGuideText = document.getElementById('mathGuideText');
+      const metricBox2 = document.getElementById('metricBox2');
+
+      if (currentExpert === 1) {
+        hudTitle.innerText = 'Chế độ Nhóm 1: Tự Chủ Khám Phá Độ Phủ (2 Camera)';
+        hudDesc.innerText = 'Tự do kéo 2 Camera quanh sảnh để tìm cấu hình triệt tiêu hoàn toàn điểm mù (Độ phủ 100%)!';
+        sideTitle.innerText = 'Khám Phá Cấu Hình Xóa Sạch Điểm Mù';
+        missionPrompt.innerText = '🎯 THỬ THÁCH: Hãy tự do kéo Camera M₁ và M₂ quanh sảnh để tìm góc đặt khiến bóng tối hoàn toàn biến mất (Thước đo độ phủ đạt 100%)! Sau đó hãy dùng Định lí 1 & 2 để giải thích phát hiện của nhóm.';
+        mathGuideText.innerHTML = `
+          • <b>Định lí 1:</b> Tiếp tuyến vuông góc bán kính tại tiếp điểm: OA ⊥ M₁A, OB ⊥ M₁B.<br>
+          • <b>Định lí 2:</b> Tia phân giác M₁O chia đôi góc quét ∠AMB. Mỗi camera quan sát được tối đa một phần mặt cong.<br>
+          • <b>Câu hỏi khám phá:</b> Khi hai camera đối xứng qua cột, hai cặp tiếp tuyến đan chéo nhau bù trừ thế nào để khép kín 360°?
+        `;
+        metricBox2.style.display = 'block';
+
+        document.getElementById('txtGroupName').value = 'Nhóm 1 - Chuyên Gia Quang Học & Độ Phủ 100%';
+        document.getElementById('txtProjectTitle').value = 'Giải Pháp Hệ Thống Tiếp Tuyến Kép Đan Chéo Triệt Tiêu 100% Điểm Mù';
+        document.getElementById('txtMathProof').value = `- Áp dụng Định lí 1: Các tia quét biên là tiếp tuyến vuông góc bán kính cột (OA ⊥ M1A, OB ⊥ M1B).
+- Áp dụng Định lí 2: Đường nối camera và tâm (M1O) là phân giác của góc quan sát.
+- Khám phá thực nghiệm & chứng minh: Khi bố trí 2 Camera M1 và M2 lệch góc từ 120° đến 180° đối xứng qua tâm cột, hai cặp tiếp tuyến đan chéo nhau sẽ bù trừ góc chết, bao trọn 360° bề mặt cong và vùng không gian phía sau cột.`;
+      } 
+      else if (currentExpert === 2) {
+        hudTitle.innerText = 'Chế độ Nhóm 2: Khám Phá Giới Hạn Vùng Mù (1 Camera)';
+        hudDesc.innerText = 'Thực nghiệm kéo Camera lùi xa cột để tìm quy luật thu hẹp diện tích vùng mù!';
+        sideTitle.innerText = 'Khám Phá Cực Tiểu Vùng Mù (1 Camera)';
+        missionPrompt.innerText = '🎯 THỬ THÁCH: Kéo Camera M₁ từ gần cột lùi dần ra xa. Hãy quan sát quy luật thu hẹp của vùng mù và vận dụng hệ thức lượng để tìm kích thước giới hạn hẹp nhất!';
+        mathGuideText.innerHTML = `
+          • <b>Định lí 1 & Tam giác vuông tiếp tuyến:</b> sin(∠AMB/2) = R / OM₁.<br>
+          • <b>Câu hỏi khám phá:</b> Khi OM₁ tăng dần ra xa bức tường đối diện, góc ∠AMB thu hẹp về đâu? Hai tia tiếp tuyến biến đổi ra sao?<br>
+          • <b>Giới hạn vật lí:</b> Vì sao vùng mù không bao giờ biến mất hoàn toàn mà tiến dần về dải hẹp có bề rộng đúng bằng đường kính cột 2R?
+        `;
+        metricBox2.style.display = 'none';
+
+        document.getElementById('txtGroupName').value = 'Nhóm 2 - Chuyên Gia Tối Ưu Chi Phí & Hiệu Quả';
+        document.getElementById('txtProjectTitle').value = 'Giải Pháp 1 Camera Thu Hẹp Vùng Mù Bằng Tiếp Tuyến Song Song';
+        document.getElementById('txtMathProof').value = `- Dựa vào hệ thức sin(∠AMB/2) = R / OM1: Góc che khuất tỉ lệ nghịch với khoảng cách OM1.
+- Khi đặt camera ở khoảng cách xa (OM1 ≥ 2.6 m), góc ∠AMB thu hẹp dưới 20°, hai tia tiếp tuyến MA và MB tiệm cận song song.
+- Diện tích vùng mù giảm từ hơn 50 m² xuống chỉ còn dải hẹp có bề rộng đúng bằng 2R, tiết kiệm 50% chi phí thiết bị cho bảo tàng.`;
+      } 
+      else if (currentExpert === 3) {
+        hudTitle.innerText = 'Chế độ Nhóm 3: Khám Phá Ranh Giới Bảo Vệ Cổ Vật (K)';
+        hudDesc.innerText = 'Di chuyển Camera để tìm ranh giới tiếp tuyến giữa vùng nhìn thấy và vùng bị che khuất!';
+        sideTitle.innerText = 'Xác Định Ranh Giới An Toàn Cho Cổ Vật';
+        missionPrompt.innerText = '🎯 THỬ THÁCH: Di chuyển Camera M₁ quanh phòng để phát hiện ranh giới chính xác giữa vùng an toàn và vùng nguy hiểm. Hãy so sánh d(O, MK) với R!';
+        mathGuideText.innerHTML = `
+          • <b>Bài 16 - Ba vị trí tương đối giữa đường nhìn MK và cột tròn (O; R):</b><br>
+          - d(O, MK) < R: Đường nhìn CẮT đường tròn => Hiện vật bị che khuất!<br>
+          - d(O, MK) = R: Đường nhìn là TIẾP TUYẾN => Vị trí ranh giới tới hạn.<br>
+          - d(O, MK) > R: Đường nhìn KHÔNG CẮT đường tròn => Tầm nhìn thông suốt an toàn 100%!
+        `;
+        metricBox2.style.display = 'none';
+
+        document.getElementById('txtGroupName').value = 'Nhóm 3 - Chuyên Gia Bảo Vệ Hiện Vật Quý';
+        document.getElementById('txtProjectTitle').value = 'Phương Án Đặt Camera Khóa Mục Tiêu Kim Cương Dựa Trên Tiếp Tuyến';
+        document.getElementById('txtMathProof').value = `- Đường nhìn từ Camera M1 đến Bệ kim cương K là đoạn thẳng M1K.
+- Vận dụng Bài 16 về vị trí tương đối:
+  + Nếu d(O, M1K) < R: Cột chắn giữa tầm nhìn, camera mất dấu hiện vật.
+  + Nếu d(O, M1K) ≥ R: Đường nhìn là tiếp tuyến hoặc không giao với cột tròn, hiện vật K luôn nằm trong vùng quan sát tự do.
+- Nhóm đã xác định vị trí đặt camera an toàn đảm bảo d(O, M1K) ≥ R = 0.5 m, bảo vệ tuyệt đối cổ vật.`;
+      }
+
+      updateToolboxUI();
+      draw();
+    }
+
+    const Room = {
+      get widthM() {
+        if (width >= 860) return 8.0;
+        return Math.max(5.0, Math.floor((width - 60) / 100 * 2) / 2);
+      },
+      get heightM() {
+        if (height >= 560) return 5.0;
+        return Math.max(3.5, Math.floor((height - 70) / 100 * 2) / 2);
+      },
+      get w() { return this.widthM * 100; },
+      get h() { return this.heightM * 100; },
+      get left() { return O.x - this.w / 2; },
+      get right() { return O.x + this.w / 2; },
+      get top() { return O.y - this.h / 2; },
+      get bottom() { return O.y + this.h / 2; },
+      get areaM2() { return parseFloat((this.widthM * this.heightM).toFixed(1)); }
+    };
+
+    function resize() {
+      width = container.clientWidth;
+      height = container.clientHeight;
+      if (width === 0 || height === 0) return;
+      canvas.width = width;
+      canvas.height = height;
+
+      O.x = width / 2;
+      O.y = height / 2;
+
+      if (Cam1.x === 0 && Cam1.y === 0) {
+        Cam1.x = O.x - 220;
+        Cam1.y = O.y - 100;
+      }
+      if (Cam2.x === 0 && Cam2.y === 0) {
+        Cam2.x = O.x + 220;
+        Cam2.y = O.y + 100;
+      }
+      TargetDiamond.x = O.x + 210;
+      TargetDiamond.y = O.y - 80;
+
+      const sideDim = document.getElementById('sideRoomDimensions');
+      const sideArea = document.getElementById('sideRoomArea');
+      if (sideDim) sideDim.innerText = `${Room.widthM.toFixed(1)} m × ${Room.heightM.toFixed(1)} m`;
+      if (sideArea) sideArea.innerText = `${Room.areaM2.toFixed(1)} m²`;
+
+      updateToolboxUI();
+      draw();
+    }
+    window.addEventListener('resize', resize);
+
+    function dist(p1, p2) { return Math.hypot(p1.x - p2.x, p1.y - p2.y); }
+
+    function computeTangents(M, circle) {
+      const d = dist(M, circle);
+      if (d <= circle.r) return null;
+
+      const alpha = Math.atan2(M.y - circle.y, M.x - circle.x);
+      const beta = Math.acos(circle.r / d);
+
+      const A = { x: circle.x + circle.r * Math.cos(alpha + beta), y: circle.y + circle.r * Math.sin(alpha + beta) };
+      const B = { x: circle.x + circle.r * Math.cos(alpha - beta), y: circle.y + circle.r * Math.sin(alpha - beta) };
+
+      const tangentLen = Math.sqrt(d * d - circle.r * circle.r);
+      const angleAMB_deg = 2 * Math.asin(circle.r / d) * (180 / Math.PI);
+      return { A, B, d, tangentLen, angleAMB_deg, alpha, beta };
+    }
+
+    function checkTargetOcclusion(M, K, circle) {
+      const dx = K.x - M.x;
+      const dy = K.y - M.y;
+      const len = Math.hypot(dx, dy);
+      if (len === 0) return { occluded: false, distLine: 999 };
+
+      const u = { x: dx / len, y: dy / len };
+      const t = (circle.x - M.x) * u.x + (circle.y - M.y) * u.y;
+
+      let closest;
+      if (t < 0) closest = M;
+      else if (t > len) closest = K;
+      else closest = { x: M.x + t * u.x, y: M.y + t * u.y };
+
+      const dCircle = dist(closest, circle);
+      const isOccluded = (t > 0 && t < len && dCircle < circle.r);
+      const distLine = Math.abs((K.y - M.y) * circle.x - (K.x - M.x) * circle.y + K.x * M.y - K.y * M.x) / len;
+
+      return { occluded: isOccluded, distLine: distLine };
+    }
+
+    function isRayBlockedByCircle(M, P, circle) {
+      const dx = P.x - M.x, dy = P.y - M.y;
+      const lenSq = dx * dx + dy * dy;
+      if (lenSq === 0) return false;
+      const t = ((circle.x - M.x) * dx + (circle.y - M.y) * dy) / lenSq;
+      if (t <= 0 || t >= 1) return false;
+      const projX = M.x + t * dx, projY = M.y + t * dy;
+      const distSq = (projX - circle.x) * (projX - circle.x) + (projY - circle.y) * (projY - circle.y);
+      return distSq < (circle.r * circle.r - 0.2);
+    }
+
+    function calculateRealRoomCoverage() {
+      const step = 8;
+      let totalFloor = 0, blindCount = 0;
+      const rPillarBoundSq = (O.r + 1.5) * (O.r + 1.5);
+
+      const cam1Active = Cam1.isDeployed;
+      const cam2Active = (currentExpert === 1 && Cam2.isDeployed);
+
+      if (!cam1Active && !cam2Active) {
+        return { blindAreaM2: Room.areaM2.toFixed(2), blindPct: '100.00', covPct: '0.00', blindCount: 999 };
+      }
+
+      for (let px = Room.left + step / 2; px <= Room.right; px += step) {
+        for (let py = Room.top + step / 2; py <= Room.bottom; py += step) {
+          const dToCenterSq = (px - O.x) * (px - O.x) + (py - O.y) * (py - O.y);
+          if (dToCenterSq <= rPillarBoundSq) continue;
+          totalFloor++;
+
+          let visible1 = cam1Active ? !isRayBlockedByCircle(Cam1, { x: px, y: py }, O) : false;
+          let visible2 = cam2Active ? !isRayBlockedByCircle(Cam2, { x: px, y: py }, O) : false;
+
+          if (!visible1 && !visible2) {
+            blindCount++;
+          }
+        }
+      }
+
+      // Quét vi mô siêu mịn (bước 2px) ngay sát quanh cột tròn để bắt trọn mọi kẽ hở giữa các tiếp tuyến
+      let nearBlind = 0;
+      if (cam1Active && cam2Active) {
+        const checkRange = O.r + 60;
+        for (let px = O.x - checkRange; px <= O.x + checkRange; px += 2) {
+          for (let py = O.y - checkRange; py <= O.y + checkRange; py += 2) {
+            const dSq = (px - O.x) * (px - O.x) + (py - O.y) * (py - O.y);
+            if (dSq <= (O.r + 0.5) * (O.r + 0.5)) continue;
+            let v1 = !isRayBlockedByCircle(Cam1, { x: px, y: py }, O);
+            let v2 = !isRayBlockedByCircle(Cam2, { x: px, y: py }, O);
+            if (!v1 && !v2) nearBlind++;
+          }
+        }
+      }
+
+      if (totalFloor === 0) return { blindAreaM2: '0.00', blindPct: '0.00', covPct: '100.00', blindCount: 0 };
+
+      if (nearBlind > 0) {
+        blindCount = Math.max(blindCount, Math.round(nearBlind / 16));
+      }
+
+      const usableAreaM2 = Room.areaM2 - (Math.PI * (O.r / 100) * (O.r / 100));
+      const blindRatio = blindCount / totalFloor;
+      let blindAreaVal = Math.max(blindRatio * usableAreaM2, nearBlind * 0.0004);
+      let blindPctVal = (blindAreaVal / usableAreaM2) * 100;
+      let covPctVal = 0;
+
+      if (blindCount === 0 && nearBlind === 0) {
+        blindAreaVal = 0.00;
+        blindPctVal = 0.00;
+        covPctVal = 100.00;
+      } else {
+        // Khi vẫn còn bất kỳ điểm mù nào (kể cả kẽ hở nhỏ sát cột), độ phủ TUYỆT ĐỐI KHÔNG BÁO 100.00%!
+        covPctVal = Math.min(99.99, 100 - blindPctVal);
+        if (blindAreaVal < 0.01) blindAreaVal = 0.01;
+        if (blindPctVal < 0.01) blindPctVal = 0.01;
+      }
+
+      return { 
+        blindAreaM2: blindAreaVal.toFixed(2), 
+        blindPct: blindPctVal.toFixed(2), 
+        covPct: covPctVal.toFixed(2), 
+        blindCount: blindCount + nearBlind
+      };
+    }
+
+    function draw() {
+      const isDark = document.body.classList.contains('dark-theme');
+      ctx.clearRect(0, 0, width, height);
+
+      // 0. CỐ ĐỊNH KHÔNG GIAN CĂN PHÒNG
+      // Nền tĩnh bên ngoài phòng (Sáng sủa, sạch sẽ)
+      ctx.fillStyle = isDark ? '#0a0e1a' : '#e2e8f0';
+      ctx.fillRect(0, 0, width, height);
+
+      // Sàn phòng trưng bày
+      ctx.fillStyle = isDark ? '#141d2e' : '#ffffff';
+      ctx.fillRect(Room.left, Room.top, Room.w, Room.h);
+
+      // Lưới gạch sàn sảnh (mỗi ô 50cm x 50cm = 50px x 50px)
+      ctx.strokeStyle = isDark ? '#1e293b' : '#f1f5f9';
+      ctx.lineWidth = 1;
+      for (let x = Room.left; x <= Room.right; x += 50) {
+        ctx.beginPath(); ctx.moveTo(x, Room.top); ctx.lineTo(x, Room.bottom); ctx.stroke();
+      }
+      for (let y = Room.top; y <= Room.bottom; y += 50) {
+        ctx.beginPath(); ctx.moveTo(Room.left, y); ctx.lineTo(Room.right, y); ctx.stroke();
+      }
+
+      // Viền tường căn phòng vững chãi
+      ctx.strokeStyle = isDark ? '#334155' : '#1e293b';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(Room.left, Room.top, Room.w, Room.h);
+
+      ctx.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(Room.left - 2, Room.top - 2, Room.w + 4, Room.h + 4);
+
+      // Thước đo kích thước tường phòng
+      ctx.save();
+      ctx.font = 'bold 11px Segoe UI';
+      ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctx.textAlign = 'center';
+      // Chiều dài phòng (phía trên)
+      ctx.fillText(`↔ CHIỀU DÀI: ${Room.widthM.toFixed(1)} m`, O.x, Room.top - 8);
+      // Chiều rộng phòng (bên trái)
+      ctx.save();
+      ctx.translate(Room.left - 8, O.y);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(`↕ RỘNG: ${Room.heightM.toFixed(1)} m`, 0, 0);
+      ctx.restore();
+
+      // Huy hiệu góc sàn phòng
+      ctx.textAlign = 'left';
+      ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.94)';
+      ctx.fillRect(Room.left + 8, Room.top + 8, 240, 24);
+      ctx.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.35)' : '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(Room.left + 8, Room.top + 8, 240, 24);
+      ctx.fillStyle = isDark ? '#94a3b8' : '#334155';
+      ctx.font = '600 11px Segoe UI';
+      ctx.fillText(`🏛️ SẢNH TRƯNG BÀY: ${Room.widthM.toFixed(1)} m × ${Room.heightM.toFixed(1)} m (S = ${Room.areaM2.toFixed(1)} m²)`, Room.left + 14, Room.top + 24);
+      ctx.restore();
+
+      const t1 = Cam1.isDeployed ? computeTangents(Cam1, O) : null;
+      const t2 = (currentExpert === 1 && Cam2.isDeployed) ? computeTangents(Cam2, O) : null;
+
+      // Draw Blind Spots (dịu mắt, khép kín trong căn phòng)
+      if (currentExpert === 1 && Cam1.isDeployed && Cam2.isDeployed && t1 && t2) {
+        drawDualBlindSpot(Cam1, Cam2, O, t1, t2);
+      } else {
+        if (t1) drawBlindSpot(Cam1, O, t1, isDark ? 'rgba(244, 63, 94, 0.20)' : 'rgba(239, 68, 68, 0.22)');
+        if (t2) drawBlindSpot(Cam2, O, t2, isDark ? 'rgba(16, 185, 129, 0.18)' : 'rgba(16, 185, 129, 0.20)');
+      }
+
+      // 1. Vẽ Pillar (Cột tròn) trước để các tia tiếp tuyến và bán kính đan chéo nổi lên trên
+      ctx.save();
+      // Thân cột
+      ctx.beginPath(); ctx.arc(O.x, O.y, O.r, 0, Math.PI * 2);
+      ctx.fillStyle = isDark ? '#141d2e' : '#f0f9ff'; ctx.fill();
+      ctx.lineWidth = 2.5; ctx.strokeStyle = isDark ? '#38bdf8' : '#0284c7'; ctx.stroke();
+
+      // Tâm O
+      ctx.beginPath(); ctx.arc(O.x, O.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#fbbf24'; ctx.fill();
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a'; ctx.font = 'bold 12px Segoe UI';
+      ctx.fillText('O', O.x - 14, O.y - 6);
+
+      // Bán kính cột bằng nét đứt (hướng góc 45 độ lên trên bên phải)
+      const rAngle = -Math.PI / 4;
+      const rEdgeX = O.x + O.r * Math.cos(rAngle);
+      const rEdgeY = O.y + O.r * Math.sin(rAngle);
+
+      ctx.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(O.x, O.y);
+      ctx.lineTo(rEdgeX, rEdgeY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Điểm mút trên mép cột
+      ctx.beginPath();
+      ctx.arc(rEdgeX, rEdgeY, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctx.fill();
+
+      // Hiển thị nhãn độ dài bán kính cột theo đơn vị mét (m)
+      const rMeters = (O.r / 100).toFixed(2).replace(/\.?0+$/, '');
+      const rLabel = `R = ${rMeters} m`;
+      ctx.font = 'bold 11px Segoe UI';
+      const rTextWidth = ctx.measureText(rLabel).width;
+      const rMidX = (O.x + rEdgeX) / 2;
+      const rMidY = (O.y + rEdgeY) / 2;
+      
+      // Hộp nền nhỏ dịu mắt để nhãn nổi bật
+      ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.94)';
+      ctx.fillRect(rMidX - 2, rMidY - 14, rTextWidth + 6, 16);
+      ctx.strokeStyle = isDark ? 'rgba(56, 189, 248, 0.4)' : '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(rMidX - 2, rMidY - 14, rTextWidth + 6, 16);
+      
+      ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+      ctx.fillText(rLabel, rMidX + 1, rMidY - 2);
+      ctx.restore();
+
+      // 2. Vẽ tiếp tuyến và các bán kính vuông góc OA, OB nổi trên bề mặt cột
+      if (t1) drawCamGeometry(Cam1, O, t1);
+      if (t2) drawCamGeometry(Cam2, O, t2);
+
+      if (currentExpert === 3) {
+        drawTargetAndSightLine();
+      }
+
+      if (Cam1.isDeployed) drawCamIcon(Cam1);
+      if (currentExpert === 1 && Cam2.isDeployed) drawCamIcon(Cam2);
+
+      // Thông báo hướng dẫn trên Canvas khi chưa đặt camera
+      if (!Cam1.isDeployed) {
+        ctx.save();
+        ctx.textAlign = 'center';
+        const boxW = Math.min(width - 40, 480);
+        const boxH = 42;
+        const boxX = width / 2 - boxW / 2;
+        const boxY = height - 55;
+        ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.95)';
+        ctx.fillRect(boxX, boxY, boxW, boxH);
+        ctx.strokeStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+        ctx.font = 'bold 12px Segoe UI';
+        ctx.fillStyle = isDark ? '#38bdf8' : '#0284c7';
+        ctx.fillText('📦 KHO THIẾT BỊ: Hãy kéo Camera M₁ từ thanh công cụ bên trên thả vào sảnh!', width / 2, boxY + 26);
+        ctx.restore();
+      } else if (currentExpert === 1 && !Cam2.isDeployed) {
+        ctx.save();
+        ctx.textAlign = 'center';
+        const boxW = Math.min(width - 40, 500);
+        const boxH = 42;
+        const boxX = width / 2 - boxW / 2;
+        const boxY = height - 55;
+        ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.92)' : 'rgba(255, 255, 255, 0.95)';
+        ctx.fillRect(boxX, boxY, boxW, boxH);
+        ctx.strokeStyle = isDark ? '#10b981' : '#059669';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+        ctx.font = 'bold 12px Segoe UI';
+        ctx.fillStyle = isDark ? '#10b981' : '#059669';
+        ctx.fillText('👉 Đã đặt Camera M₁! Hãy kéo tiếp Camera M₂ từ thanh công cụ thả vào sảnh!', width / 2, boxY + 26);
+        ctx.restore();
+      }
+
+      updateGroupMetrics(t1, t2);
+    }
+
+    const offCanvas = document.createElement('canvas');
+    const offCtx = offCanvas.getContext('2d');
+
+    function drawBlindSpotOnCtx(targetCtx, cam, circle, t, color) {
+      const rayLen = 1600;
+      const dirA = { x: t.A.x - cam.x, y: t.A.y - cam.y };
+      const lenA = Math.hypot(dirA.x, dirA.y);
+      const farA = { x: t.A.x + (dirA.x / lenA) * rayLen, y: t.A.y + (dirA.y / lenA) * rayLen };
+
+      const dirB = { x: t.B.x - cam.x, y: t.B.y - cam.y };
+      const lenB = Math.hypot(dirB.x, dirB.y);
+      const farB = { x: t.B.x + (dirB.x / lenB) * rayLen, y: t.B.y + (dirB.y / lenB) * rayLen };
+
+      targetCtx.save();
+      targetCtx.beginPath();
+      targetCtx.rect(Room.left, Room.top, Room.w, Room.h);
+      targetCtx.clip();
+
+      targetCtx.fillStyle = color;
+      targetCtx.beginPath();
+      targetCtx.moveTo(farA.x, farA.y);
+      targetCtx.lineTo(t.A.x, t.A.y);
+
+      const startAngle = Math.atan2(t.A.y - circle.y, t.A.x - circle.x);
+      const endAngle = Math.atan2(t.B.y - circle.y, t.B.x - circle.x);
+      targetCtx.arc(circle.x, circle.y, circle.r, startAngle, endAngle, false);
+      targetCtx.lineTo(farB.x, farB.y);
+      targetCtx.closePath();
+      targetCtx.fill();
+      targetCtx.restore();
+    }
+
+    function drawBlindSpot(cam, circle, t, color) {
+      drawBlindSpotOnCtx(ctx, cam, circle, t, color);
+    }
+
+    function drawDualBlindSpot(cam1, cam2, circle, t1, t2) {
+      if (offCanvas.width !== width || offCanvas.height !== height) {
+        offCanvas.width = width;
+        offCanvas.height = height;
+      }
+      offCtx.clearRect(0, 0, width, height);
+
+      // Vẽ bóng tối của Cam 1
+      drawBlindSpotOnCtx(offCtx, cam1, circle, t1, '#f43f5e');
+
+      // Giữ lại phần giao nhau với bóng tối của Cam 2
+      offCtx.globalCompositeOperation = 'source-in';
+      drawBlindSpotOnCtx(offCtx, cam2, circle, t2, '#f43f5e');
+      offCtx.globalCompositeOperation = 'source-over';
+
+      // Vẽ vùng mù chung lên sàn với độ trong suốt dịu mắt
+      ctx.save();
+      ctx.globalAlpha = 0.22;
+      ctx.drawImage(offCanvas, 0, 0);
+      ctx.restore();
+    }
+
+    function drawCamGeometry(cam, circle, t) {
+      ctx.save();
+      // Giới hạn các tia tiếp tuyến trong khuôn viên phòng
+      ctx.beginPath();
+      ctx.rect(Room.left, Room.top, Room.w, Room.h);
+      ctx.clip();
+
+      ctx.strokeStyle = cam.color;
+      ctx.lineWidth = 1.8;
+      const rayLen = 1600;
+      const dirA = { x: t.A.x - cam.x, y: t.A.y - cam.y };
+      const lenA = Math.hypot(dirA.x, dirA.y);
+      ctx.beginPath(); ctx.moveTo(cam.x, cam.y); ctx.lineTo(cam.x + (dirA.x/lenA)*rayLen, cam.y + (dirA.y/lenA)*rayLen); ctx.stroke();
+
+      const dirB = { x: t.B.x - cam.x, y: t.B.y - cam.y };
+      const lenB = Math.hypot(dirB.x, dirB.y);
+      ctx.beginPath(); ctx.moveTo(cam.x, cam.y); ctx.lineTo(cam.x + (dirB.x/lenB)*rayLen, cam.y + (dirB.y/lenB)*rayLen); ctx.stroke();
+
+      // Bán kính OA và OB vẽ bằng nét đứt (vuông góc với tiếp tuyến MA, MB tại tiếp điểm)
+      ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1.8;
+      ctx.setLineDash([5, 4]);
+      ctx.beginPath(); ctx.moveTo(circle.x, circle.y); ctx.lineTo(t.A.x, t.A.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(circle.x, circle.y); ctx.lineTo(t.B.x, t.B.y); ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 1.5; ctx.setLineDash([5, 5]);
+      ctx.beginPath(); ctx.moveTo(cam.x, cam.y); ctx.lineTo(circle.x, circle.y); ctx.stroke();
+      ctx.setLineDash([]);
+
+      drawRightAngleCtx(ctx, circle, t.A, cam);
+      drawRightAngleCtx(ctx, circle, t.B, cam);
+
+      const isDark = document.body.classList.contains('dark-theme');
+      ctx.fillStyle = isDark ? '#f8fafc' : '#0f172a';
+      ctx.font = 'bold 11px Segoe UI';
+      ctx.fillText('A', t.A.x + 6, t.A.y - 6);
+      ctx.fillText('B', t.B.x + 6, t.B.y + 14);
+      ctx.restore();
+    }
+
+    function drawCamIcon(cam) {
+      const isDark = document.body.classList.contains('dark-theme');
+      ctx.save();
+      ctx.beginPath(); ctx.arc(cam.x, cam.y, 13, 0, Math.PI * 2);
+      ctx.fillStyle = cam.color; ctx.shadowBlur = 8; ctx.shadowColor = cam.color; ctx.fill(); ctx.shadowBlur = 0;
+
+      ctx.beginPath(); ctx.arc(cam.x, cam.y, 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff'; ctx.fill();
+
+      // Hộp nhãn camera hiển thị rõ ràng trên mọi nền
+      ctx.font = 'bold 11px Segoe UI';
+      const lblW = ctx.measureText(cam.label).width;
+      ctx.fillStyle = isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.94)';
+      ctx.fillRect(cam.x - lblW/2 - 4, cam.y - 28, lblW + 8, 16);
+      ctx.strokeStyle = cam.color;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(cam.x - lblW/2 - 4, cam.y - 28, lblW + 8, 16);
+
+      ctx.fillStyle = isDark ? '#ffffff' : '#0f172a';
+      ctx.textAlign = 'center';
+      ctx.fillText(cam.label, cam.x, cam.y - 16);
+      ctx.restore();
+    }
+
+    function drawTargetAndSightLine() {
+      const isDark = document.body.classList.contains('dark-theme');
+      let isOcc = false;
+      if (Cam1.isDeployed) {
+        const check = checkTargetOcclusion(Cam1, TargetDiamond, O);
+        isOcc = check.occluded;
+        ctx.save();
+        ctx.lineWidth = 2;
+        if (check.occluded) {
+          ctx.strokeStyle = '#f43f5e'; ctx.setLineDash([6, 6]);
+        } else {
+          ctx.strokeStyle = '#10b981'; ctx.setLineDash([]);
+        }
+        ctx.beginPath(); ctx.moveTo(Cam1.x, Cam1.y); ctx.lineTo(TargetDiamond.x, TargetDiamond.y); ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.save();
+      ctx.translate(TargetDiamond.x, TargetDiamond.y);
+      ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(14, 0); ctx.lineTo(0, 16); ctx.lineTo(-14, 0); ctx.closePath();
+      ctx.fillStyle = isOcc ? '#f43f5e' : '#f59e0b';
+      ctx.shadowBlur = 10; ctx.shadowColor = isOcc ? '#f43f5e' : '#f59e0b'; ctx.fill(); ctx.shadowBlur = 0;
+      ctx.lineWidth = 1.8; ctx.strokeStyle = '#ffffff'; ctx.stroke();
+
+      ctx.fillStyle = isDark ? '#ffffff' : '#0f172a';
+      ctx.font = 'bold 11px Segoe UI';
+      ctx.fillText('💎 Cổ Vật K', -26, 26);
+      ctx.restore();
+    }
+
+    function updateGroupMetrics(t1, t2) {
+      const metricM1 = document.getElementById('metricM1');
+      const metricM2 = document.getElementById('metricM2');
+      const metricAngle = document.getElementById('metricAngle');
+      const metricExtra = document.getElementById('metricExtra');
+      const metricBoxExtra = document.getElementById('metricBoxExtra');
+      const statusBox = document.getElementById('statusBox');
+      const statusIcon = document.getElementById('statusIcon');
+      const statusText = document.getElementById('statusText');
+
+      const lblExtra = document.getElementById('lblMetricExtra');
+      const lblCoverage = document.getElementById('lblCoverageTitle');
+      const valCoverage = document.getElementById('valCoveragePercent');
+      const barCoverage = document.getElementById('barCoverage');
+      const noteCoverage = document.getElementById('noteCoverage');
+
+      const sideDim = document.getElementById('sideRoomDimensions');
+      const sideArea = document.getElementById('sideRoomArea');
+      if (sideDim) sideDim.innerText = `${Room.widthM.toFixed(1)} m × ${Room.heightM.toFixed(1)} m`;
+      if (sideArea) sideArea.innerText = `${Room.areaM2.toFixed(1)} m²`;
+
+      if (!Cam1.isDeployed) {
+        metricM1.innerText = 'Chưa đặt';
+        metricAngle.innerText = '--';
+        if (lblExtra) {
+          if (currentExpert === 1) lblExtra.innerText = 'Vùng mù sàn:';
+          else if (currentExpert === 2) lblExtra.innerText = 'Vùng mù sàn:';
+          else lblExtra.innerText = 'Khoảng cách d(O, MK):';
+        }
+        metricExtra.innerText = '--';
+        if (currentExpert === 1) metricM2.innerText = 'Chưa đặt';
+
+        if (lblCoverage) {
+          if (currentExpert === 1) lblCoverage.innerText = '📊 THƯỚC ĐO ĐỘ PHỦ SÀN:';
+          else if (currentExpert === 2) lblCoverage.innerText = '📉 TIẾN TRÌNH THU HẸP VÙNG MÙ:';
+          else lblCoverage.innerText = '🎯 ĐỘ THÔNG SUỐT TẦM NHÌN:';
+        }
+        function setStatusStyle(type) {
+          const isDark = document.body.classList.contains('dark-theme');
+          if (type === 'success') {
+            statusBox.style.background = isDark ? 'rgba(16, 185, 129, 0.15)' : '#ecfdf5';
+            statusBox.style.borderColor = isDark ? 'rgba(16, 185, 129, 0.35)' : '#a7f3d0';
+            statusBox.style.color = isDark ? '#a7f3d0' : '#065f46';
+          } else if (type === 'danger') {
+            statusBox.style.background = isDark ? 'rgba(244, 63, 94, 0.15)' : '#fef2f2';
+            statusBox.style.borderColor = isDark ? 'rgba(244, 63, 94, 0.35)' : '#fecaca';
+            statusBox.style.color = isDark ? '#fecaca' : '#991b1b';
+          } else if (type === 'warning') {
+            statusBox.style.background = isDark ? 'rgba(245, 158, 11, 0.15)' : '#fffbeb';
+            statusBox.style.borderColor = isDark ? 'rgba(245, 158, 11, 0.35)' : '#fde68a';
+            statusBox.style.color = isDark ? '#fef3c7' : '#92400e';
+          } else {
+            statusBox.style.background = isDark ? 'rgba(56, 189, 248, 0.12)' : '#f0f9ff';
+            statusBox.style.borderColor = isDark ? 'rgba(56, 189, 248, 0.35)' : '#bae6fd';
+            statusBox.style.color = isDark ? '#bae6fd' : '#0369a1';
+          }
+        }
+
+        function getStatusColor(type) {
+          const isDark = document.body.classList.contains('dark-theme');
+          if (type === 'success') return isDark ? '#34d399' : '#059669';
+          if (type === 'warning') return isDark ? '#fbbf24' : '#d97706';
+          if (type === 'danger') return isDark ? '#f87171' : '#dc2626';
+          return isDark ? '#38bdf8' : '#0284c7';
+        }
+
+        if (valCoverage) {
+          valCoverage.innerText = '0.00%';
+          valCoverage.style.color = getStatusColor('info');
+        }
+        if (barCoverage) {
+          barCoverage.style.width = '0%';
+          barCoverage.style.background = '#64748b';
+        }
+        if (noteCoverage) noteCoverage.innerText = 'Kéo camera từ kho thiết bị vào sơ đồ sảnh để bắt đầu đo tiến trình khám phá.';
+
+        setStatusStyle('info');
+        statusIcon.innerText = '📦';
+        statusText.innerText = 'Kho thiết bị đã sẵn sàng: Kéo camera từ thanh công cụ thả vào sơ đồ sảnh!';
+        return;
+      }
+
+      function setStatusStyle(type) {
+        const isDark = document.body.classList.contains('dark-theme');
+        if (type === 'success') {
+          statusBox.style.background = isDark ? 'rgba(16, 185, 129, 0.15)' : '#ecfdf5';
+          statusBox.style.borderColor = isDark ? 'rgba(16, 185, 129, 0.35)' : '#a7f3d0';
+          statusBox.style.color = isDark ? '#a7f3d0' : '#065f46';
+        } else if (type === 'danger') {
+          statusBox.style.background = isDark ? 'rgba(244, 63, 94, 0.15)' : '#fef2f2';
+          statusBox.style.borderColor = isDark ? 'rgba(244, 63, 94, 0.35)' : '#fecaca';
+          statusBox.style.color = isDark ? '#fecaca' : '#991b1b';
+        } else if (type === 'warning') {
+          statusBox.style.background = isDark ? 'rgba(245, 158, 11, 0.15)' : '#fffbeb';
+          statusBox.style.borderColor = isDark ? 'rgba(245, 158, 11, 0.35)' : '#fde68a';
+          statusBox.style.color = isDark ? '#fef3c7' : '#92400e';
+        } else {
+          statusBox.style.background = isDark ? 'rgba(56, 189, 248, 0.12)' : '#f0f9ff';
+          statusBox.style.borderColor = isDark ? 'rgba(56, 189, 248, 0.35)' : '#bae6fd';
+          statusBox.style.color = isDark ? '#bae6fd' : '#0369a1';
+        }
+      }
+
+      function getStatusColor(type) {
+        const isDark = document.body.classList.contains('dark-theme');
+        if (type === 'success') return isDark ? '#34d399' : '#059669';
+        if (type === 'warning') return isDark ? '#fbbf24' : '#d97706';
+        if (type === 'danger') return isDark ? '#f87171' : '#dc2626';
+        return isDark ? '#38bdf8' : '#0284c7';
+      }
+
+      if (!t1) return;
+      metricM1.innerText = (t1.d / 100).toFixed(2) + ' m';
+      metricAngle.innerText = Math.round(t1.angleAMB_deg) + '°';
+
+      // TÍNH TOÁN DIỆN TÍCH VÀ PHẦN TRĂM VÙNG MÙ THỰC TẾ TRONG PHÒNG CỐ ĐỊNH
+      const cov = calculateRealRoomCoverage();
+
+      if (currentExpert === 1) {
+        if (lblCoverage) lblCoverage.innerText = '📊 THƯỚC ĐO ĐỘ PHỦ SÀN:';
+
+        if (!Cam2.isDeployed) {
+          metricM2.innerText = 'Chưa đặt';
+          if (lblExtra) lblExtra.innerText = 'Vùng mù sàn:';
+          metricExtra.innerText = `${cov.blindAreaM2} m² (${cov.blindPct}%)`;
+
+          if (valCoverage) {
+            valCoverage.innerText = `${cov.covPct}%`;
+            valCoverage.style.color = getStatusColor(cov.covPct >= 80 ? 'warning' : 'danger');
+          }
+          if (barCoverage) {
+            barCoverage.style.width = `${cov.covPct}%`;
+            barCoverage.style.background = cov.covPct >= 80 ? 'linear-gradient(90deg, #ef4444, #eab308)' : '#ef4444';
+          }
+          if (noteCoverage) {
+            noteCoverage.innerHTML = `Vùng mù sau cột: <b>${cov.blindAreaM2} m²</b> (${cov.blindPct}% diện tích phòng). Độ phủ phòng đạt <b>${cov.covPct}%</b>. Kéo thêm Camera M₂ để triệt tiêu hoàn toàn vùng tối này!`;
+          }
+
+          setStatusStyle('danger');
+          statusIcon.innerText = '🔍';
+          statusText.innerText = `Đã đặt 1 Camera (Vùng mù: ${cov.blindAreaM2} m² chiếm ${cov.blindPct}% sàn phòng). Thử kéo thêm Camera M₂ vào sảnh để tìm cấu hình bù trừ!`;
+          return;
+        }
+
+        metricM2.innerText = t2 ? (t2.d / 100).toFixed(2) + ' m' : 'Chưa bật';
+        if (lblExtra) lblExtra.innerText = 'Góc lệch 2 Cam:';
+        
+        const ang1 = Math.atan2(Cam1.y - O.y, Cam1.x - O.x);
+        const ang2 = Math.atan2(Cam2.y - O.y, Cam2.x - O.x);
+        let diff = Math.abs(ang1 - ang2) * (180 / Math.PI);
+        if (diff > 180) diff = 360 - diff;
+        metricExtra.innerText = Math.round(diff) + '°';
+
+        if (cov.blindCount === 0) {
+          if (valCoverage) {
+            valCoverage.innerText = '100.00% (HOÀN HẢO)';
+            valCoverage.style.color = getStatusColor('success');
+          }
+          if (barCoverage) {
+            barCoverage.style.width = '100%';
+            barCoverage.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+          }
+          if (noteCoverage) {
+            noteCoverage.innerHTML = `Góc lệch 2 cam: <b>${Math.round(diff)}°</b>. Vùng mù: <b>0.00 m² (0.00%)</b>. Hai chùm tiếp tuyến đan chéo khép kín 360°! Đã xóa sạch mọi góc chết.`;
+          }
+
+          setStatusStyle('success');
+          statusIcon.innerText = '🎉';
+          statusText.innerText = 'XUẤT SẮC! ĐỘ PHỦ 100.00% - ĐÃ TRIỆT TIÊU TOÀN BỘ ĐIỂM MÙ! Nhóm hãy dùng Định lí 1 & 2 để giải thích vì sao hai chùm tiếp tuyến lại ôm trọn được chu vi cột!';
+        } else {
+          // VẪN CÒN ĐIỂM MÙ -> BÁO RÕ % VÀ CẢNH BÁO CHƯA ĐẠT!
+          if (valCoverage) {
+            valCoverage.innerText = `${cov.covPct}% (CÒN ĐIỂM MÙ)`;
+            valCoverage.style.color = getStatusColor(diff < 60 ? 'danger' : 'warning');
+          }
+          if (barCoverage) {
+            barCoverage.style.width = `${cov.covPct}%`;
+            barCoverage.style.background = diff < 60 ? '#ef4444' : 'linear-gradient(90deg, #ef4444, #eab308)';
+          }
+
+          if (diff < 60) {
+            if (noteCoverage) {
+              noteCoverage.innerHTML = `Góc lệch: <b>${Math.round(diff)}°</b>. Vùng mù còn lại: <b>${cov.blindAreaM2} m²</b> (${cov.blindPct}% sàn). Hai camera đang cùng nhìn về một phía!`;
+            }
+            setStatusStyle('danger');
+            statusIcon.innerText = '⚠️';
+            statusText.innerText = `Đang hở góc chết lớn (${cov.blindAreaM2} m² ~ ${cov.blindPct}% sàn)! Hai camera nhìn cùng một hướng. Hãy thử kéo di chuyển sang các vị trí khác quanh sảnh!`;
+          } else {
+            if (noteCoverage) {
+              noteCoverage.innerHTML = `Góc lệch: <b>${Math.round(diff)}°</b>. Vẫn còn góc chết sát mép cột: <b>${cov.blindAreaM2} m²</b> (${cov.blindPct}% sàn). Hãy tiếp tục kéo Camera 2 sang góc đối diện rộng hơn!`;
+            }
+            setStatusStyle('warning');
+            statusIcon.innerText = '⚠️';
+            statusText.innerText = `VẪN CÒN ĐIỂM MÙ (${cov.blindAreaM2} m² sát chân cột)! Độ phủ mới đạt ${cov.covPct}%. Hãy tiếp tục kéo Camera M₂ sang góc đối diện rộng hơn để quét sạch góc chết!`;
+          }
+        }
+      } 
+      else if (currentExpert === 2) {
+        if (lblCoverage) lblCoverage.innerText = '📉 TIẾN TRÌNH THU HẸP VÙNG MÙ:';
+        if (lblExtra) lblExtra.innerText = 'Vùng mù thực tế:';
+        metricExtra.innerText = `${cov.blindAreaM2} m² (${cov.blindPct}%)`;
+
+        if (valCoverage) {
+          valCoverage.innerText = `${cov.covPct}%`;
+          valCoverage.style.color = getStatusColor(t1.d >= 260 ? 'success' : 'warning');
+        }
+        if (barCoverage) {
+          barCoverage.style.width = `${cov.covPct}%`;
+          barCoverage.style.background = t1.d >= 260 ? 'linear-gradient(90deg, #10b981, #34d399)' : 'linear-gradient(90deg, #ef4444, #eab308)';
+        }
+
+        if (t1.d >= 260) {
+          if (noteCoverage) {
+            noteCoverage.innerHTML = `Khoảng cách <b>${metricM1.innerText}</b>: Vùng mù co lại cực tiểu <b>${cov.blindAreaM2} m²</b> (chỉ còn ${cov.blindPct}% sàn). Góc quét ∠AMB = <b>${metricAngle.innerText}</b>!`;
+          }
+          setStatusStyle('success');
+          statusIcon.innerText = '✨';
+          statusText.innerText = `TỐI ƯU CHI PHÍ THỰC TẾ! Vùng mù co lại tối thiểu (${cov.blindAreaM2} m² ~ ${cov.blindPct}% sàn). Hai tiếp tuyến tiệm cận song song có bề rộng đúng bằng 2R!`;
+        } else {
+          if (noteCoverage) {
+            noteCoverage.innerHTML = `Khoảng cách <b>${metricM1.innerText}</b>: Camera gần cột khiến góc quét xòe to (${metricAngle.innerText}), vùng mù phình to <b>${cov.blindAreaM2} m²</b> (${cov.blindPct}% sàn)!`;
+          }
+          setStatusStyle('warning');
+          statusIcon.innerText = '💡';
+          statusText.innerText = `Camera gần cột (Vùng mù rộng ${cov.blindAreaM2} m² ~ ${cov.blindPct}% sàn). Hãy thử kéo camera lùi xa cột ra phía tường đối diện để khám phá quy luật!`;
+        }
+      } 
+      else if (currentExpert === 3) {
+        if (lblCoverage) lblCoverage.innerText = '🎯 ĐỘ THÔNG SUỐT TẦM NHÌN:';
+        const check = checkTargetOcclusion(Cam1, TargetDiamond, O);
+        if (lblExtra) lblExtra.innerText = 'Khoảng cách d(O, MK):';
+        metricExtra.innerText = (check.distLine / 100).toFixed(2) + ' m';
+
+        const dM = (check.distLine / 100).toFixed(2);
+        const rM = (O.r / 100).toFixed(2);
+        if (check.occluded) {
+          const ratioPct = Math.min(85, Math.max(15, Math.round((check.distLine / O.r) * 100)));
+          if (valCoverage) {
+            valCoverage.innerText = ratioPct + '% (BỊ CHE KHUẤT)';
+            valCoverage.style.color = getStatusColor('danger');
+          }
+          if (barCoverage) {
+            barCoverage.style.width = ratioPct + '%';
+            barCoverage.style.background = '#ef4444';
+          }
+          if (noteCoverage) noteCoverage.innerHTML = `Khoảng cách <b>d = ${dM} m < R = ${rM} m</b>: Đường nối MK đang cắt thân cột tròn!`;
+
+          setStatusStyle('danger');
+          statusIcon.innerText = '🚨';
+          statusText.innerText = `NGUY HIỂM! Đoạn nhìn MK CẮT THÂN CỘT (d = ${dM} m < R = ${rM} m). Hãy kéo camera sang vị trí khác để tìm vùng thông suốt!`;
+        } else {
+          if (valCoverage) {
+            valCoverage.innerText = '100% (AN TOÀN)';
+            valCoverage.style.color = getStatusColor('success');
+          }
+          if (barCoverage) {
+            barCoverage.style.width = '100%';
+            barCoverage.style.background = 'linear-gradient(90deg, #10b981, #34d399)';
+          }
+          if (noteCoverage) noteCoverage.innerHTML = `Khoảng cách <b>d = ${dM} m ≥ R = ${rM} m</b>: Đường nối MK không giao với cột tròn! Hiện vật K được khóa an toàn.`;
+
+          setStatusStyle('success');
+          statusIcon.innerText = '💎';
+          statusText.innerText = `AN TOÀN! Đường nhìn thông suốt (d = ${dM} m ≥ R = ${rM} m). Đã phát hiện vị trí tiếp tuyến ranh giới và bảo vệ an toàn cổ vật!`;
+        }
+      }
+    }
+
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - r.left, y: clientY - r.top };
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      const p = getPos(e);
+      if (Cam1.isDeployed && dist(p, Cam1) < 26) Cam1.isDragging = true;
+      else if (currentExpert === 1 && Cam2.isDeployed && dist(p, Cam2) < 26) Cam2.isDragging = true;
+      else if (currentExpert === 3 && dist(p, TargetDiamond) < 26) TargetDiamond.isDragging = true;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      const p = getPos(e);
+      if (Cam1.isDragging && dist(p, O) > O.r + 15) {
+        Cam1.x = Math.max(Room.left + 25, Math.min(Room.right - 25, p.x));
+        Cam1.y = Math.max(Room.top + 25, Math.min(Room.bottom - 25, p.y));
+        draw();
+      } else if (Cam2.isDragging && dist(p, O) > O.r + 15) {
+        Cam2.x = Math.max(Room.left + 25, Math.min(Room.right - 25, p.x));
+        Cam2.y = Math.max(Room.top + 25, Math.min(Room.bottom - 25, p.y));
+        draw();
+      } else if (TargetDiamond.isDragging && dist(p, O) > O.r + 20) {
+        TargetDiamond.x = Math.max(Room.left + 25, Math.min(Room.right - 25, p.x));
+        TargetDiamond.y = Math.max(Room.top + 25, Math.min(Room.bottom - 25, p.y));
+        draw();
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      Cam1.isDragging = false;
+      Cam2.isDragging = false;
+      TargetDiamond.isDragging = false;
+    });
+
+    const inputREl = document.getElementById('inputR');
+    if (inputREl) {
+      inputREl.addEventListener('input', (e) => {
+        let val = parseFloat(e.target.value);
+        if (isNaN(val) || val <= 0) return;
+        val = Math.max(0.15, Math.min(2.5, val));
+        O.r = Math.round(val * 100);
+        draw();
+      });
+      inputREl.addEventListener('change', (e) => {
+        let val = parseFloat(e.target.value);
+        if (isNaN(val) || val < 0.2) val = 0.2;
+        if (val > 2.0) val = 2.0;
+        e.target.value = val;
+        O.r = Math.round(val * 100);
+        draw();
+      });
+    }
+
+    document.getElementById('btnResetCanvas').addEventListener('click', () => {
+      O.r = 50;
+      if (inputREl) inputREl.value = '0.5';
+      Cam1.x = O.x - 220; Cam1.y = O.y - 100; Cam1.isDeployed = true;
+      Cam2.x = O.x + 220; Cam2.y = O.y + 100; Cam2.isDeployed = (currentExpert === 1);
+      TargetDiamond.x = O.x + 210; TargetDiamond.y = O.y - 80;
+      updateToolboxUI();
+      draw();
+    });
+
+    // ==========================================
+    // KHO THIẾT BỊ: DRAG & DROP CAMERA VÀO SƠ ĐỒ
+    // ==========================================
+    let draggedCamType = null;
+
+    function deployCamera(type, x, y) {
+      const dToO = Math.hypot(x - O.x, y - O.y);
+      if (dToO < O.r + 25) {
+        const angle = (x === O.x && y === O.y) ? -Math.PI / 2 : Math.atan2(y - O.y, x - O.x);
+        x = O.x + (O.r + 55) * Math.cos(angle);
+        y = O.y + (O.r + 55) * Math.sin(angle);
+      }
+      if (width > 70) x = Math.max(Room.left + 25, Math.min(Room.right - 25, x));
+      if (height > 70) y = Math.max(Room.top + 25, Math.min(Room.bottom - 25, y));
+
+      if (type === 1) {
+        Cam1.x = x;
+        Cam1.y = y;
+        Cam1.isDeployed = true;
+      } else if (type === 2 && currentExpert === 1) {
+        Cam2.x = x;
+        Cam2.y = y;
+        Cam2.isDeployed = true;
+      }
+
+      updateToolboxUI();
+      draw();
+    }
+
+    function updateToolboxUI() {
+      const item1 = document.getElementById('camDragItem1');
+      const label1 = document.getElementById('camDockLabel1');
+      const item2 = document.getElementById('camDragItem2');
+      const label2 = document.getElementById('camDockLabel2');
+
+      if (item1 && label1) {
+        if (Cam1.isDeployed) {
+          item1.classList.add('deployed');
+          label1.innerText = '✅ Camera M₁ (Đã đặt - Kéo trên sân)';
+        } else {
+          item1.classList.remove('deployed');
+          label1.innerText = '📹 Kéo đặt Camera M₁';
+        }
+      }
+
+      if (item2 && label2) {
+        if (currentExpert === 1) {
+          item2.style.display = 'inline-flex';
+          if (Cam2.isDeployed) {
+            item2.classList.add('deployed');
+            label2.innerText = '✅ Camera M₂ (Đã đặt - Kéo trên sân)';
+          } else {
+            item2.classList.remove('deployed');
+            label2.innerText = '📹 Kéo đặt Camera M₂';
+          }
+        } else {
+          item2.style.display = 'none';
+        }
+      }
+    }
+
+    const camItem1 = document.getElementById('camDragItem1');
+    const camItem2 = document.getElementById('camDragItem2');
+    const canvasWrap = document.getElementById('canvasWrapper');
+
+    if (camItem1) {
+      camItem1.addEventListener('dragstart', (e) => {
+        draggedCamType = 1;
+        e.dataTransfer.setData('text/plain', 'cam1');
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      camItem1.addEventListener('click', () => {
+        if (!Cam1.isDeployed) {
+          deployCamera(1, O.x - 220, O.y - 100);
+        }
+      });
+    }
+
+    if (camItem2) {
+      camItem2.addEventListener('dragstart', (e) => {
+        draggedCamType = 2;
+        e.dataTransfer.setData('text/plain', 'cam2');
+        e.dataTransfer.effectAllowed = 'copy';
+      });
+      camItem2.addEventListener('click', () => {
+        if (currentExpert === 1 && !Cam2.isDeployed) {
+          deployCamera(2, O.x + 220, O.y + 100);
+        }
+      });
+    }
+
+    if (canvasWrap) {
+      canvasWrap.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+        canvasWrap.classList.add('drag-over');
+      });
+      canvasWrap.addEventListener('dragleave', () => {
+        canvasWrap.classList.remove('drag-over');
+      });
+      canvasWrap.addEventListener('drop', (e) => {
+        e.preventDefault();
+        canvasWrap.classList.remove('drag-over');
+        const rect = canvas.getBoundingClientRect();
+        const dropX = e.clientX - rect.left;
+        const dropY = e.clientY - rect.top;
+        if (draggedCamType) {
+          deployCamera(draggedCamType, dropX, dropY);
+          draggedCamType = null;
+        }
+      });
+    }
+
+    const btnRecall = document.getElementById('btnRecallCams');
+    if (btnRecall) {
+      btnRecall.addEventListener('click', () => {
+        Cam1.isDeployed = false;
+        Cam2.isDeployed = false;
+        updateToolboxUI();
+        draw();
+      });
+    }
+
+    // --- SNAPSHOT & PRESENTATION ---
+    function takeSnapshot() {
+      latestSnapshotDataUrl = canvas.toDataURL('image/png');
+      const previewImg = document.getElementById('previewImg');
+      previewImg.src = latestSnapshotDataUrl;
+      previewImg.style.display = 'block';
+      document.getElementById('snapshotPlaceholder').style.display = 'none';
+
+      const t1 = Cam1.isDeployed ? computeTangents(Cam1, O) : null;
+      const metricsDiv = document.getElementById('previewMetricsText');
+
+      if (!t1) {
+        metricsDiv.innerHTML = '• <i>Chưa bố trí camera vào sơ đồ sảnh bảo tàng.</i>';
+      } else if (currentExpert === 1) {
+        const d2 = Cam2.isDeployed ? (dist(Cam2, O) / 100).toFixed(2) + ' m' : 'Chưa đặt';
+        const cov = calculateRealRoomCoverage();
+        const secStatus = (cov.blindCount === 0) 
+          ? 'Độ phủ 100.00% (Triệt tiêu toàn bộ điểm mù)' 
+          : `Độ phủ ${cov.covPct}% (Còn vùng mù ${cov.blindAreaM2} m² ~ ${cov.blindPct}% sàn)`;
+        metricsDiv.innerHTML = `
+          • Nhóm 1: Hệ thống Camera (OM₁ = ${(t1.d / 100).toFixed(2)} m, OM₂ = ${d2})<br>
+          • Đánh giá an ninh: <b>${secStatus}</b>
+        `;
+      } else if (currentExpert === 2) {
+        const cov = calculateRealRoomCoverage();
+        metricsDiv.innerHTML = `
+          • Nhóm 2: Giải pháp 1 Camera tiết kiệm (OM₁ = ${(t1.d / 100).toFixed(2)} m)<br>
+          • Góc quét: ∠AMB = ${Math.round(t1.angleAMB_deg)}° | <b>Vùng mù: ${cov.blindAreaM2} m² (${cov.blindPct}% sàn)</b>
+        `;
+      } else if (currentExpert === 3) {
+        metricsDiv.innerHTML = `
+          • Nhóm 3: Bảo vệ mục tiêu Cổ vật K (OM₁ = ${(t1.d / 100).toFixed(2)} m)<br>
+          • Vị trí tương đối: Đường nhìn MK nằm ngoài cột tròn (d > R) | <b>Đã khóa mục tiêu an toàn</b>
+        `;
+      }
+    }
+
+    document.getElementById('btnUpdateSnapshot').addEventListener('click', () => {
+      takeSnapshot();
+      alert('Đã cập nhật ảnh sơ đồ từ phòng nghiên cứu sang bản báo cáo thành công!');
+    });
+
+    const presOverlay = document.getElementById('presOverlay');
+    document.getElementById('btnStartPresentation').addEventListener('click', () => {
+      if (!latestSnapshotDataUrl) takeSnapshot();
+
+      document.getElementById('presModalTitle').innerText = document.getElementById('txtProjectTitle').value;
+      document.getElementById('presTeam').innerText = document.getElementById('txtGroupName').value;
+      document.getElementById('presMembers').innerText = 'Thành viên: ' + document.getElementById('txtMembers').value;
+      document.getElementById('presProofText').innerText = document.getElementById('txtMathProof').value;
+      document.getElementById('presImg').src = latestSnapshotDataUrl;
+
+      presOverlay.style.display = 'flex';
+    });
+
+    document.getElementById('btnClosePres').addEventListener('click', () => {
+      presOverlay.style.display = 'none';
+    });
+
+    // --- THEME SWITCHER (MẶC ĐỊNH SÁNG TRANG NHÃ - DỊU MẮT) ---
+    const btnToggleTheme = document.getElementById('btnToggleTheme');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark-theme');
+        if (themeIcon) themeIcon.innerText = '🌙';
+        if (themeText) themeText.innerText = 'Giao diện Tối';
+      } else {
+        document.body.classList.remove('dark-theme');
+        if (themeIcon) themeIcon.innerText = '☀️';
+        if (themeText) themeText.innerText = 'Giao diện Sáng';
+      }
+      try { localStorage.setItem('math9_theme', isDark ? 'dark' : 'light'); } catch (e) {}
+      draw();
+      drawP1();
+    }
+
+    if (btnToggleTheme) {
+      btnToggleTheme.addEventListener('click', () => {
+        const currentlyDark = document.body.classList.contains('dark-theme');
+        applyTheme(!currentlyDark);
+      });
+    }
+
+    // Default: Light Theme (Sáng sủa, sạch đẹp, dịu mắt)
+    let savedTheme = 'light';
+    try { savedTheme = localStorage.getItem('math9_theme') || 'light'; } catch(e) {}
+    applyTheme(savedTheme === 'dark');
+
+    // INIT
+    setPeriod1Step(1);
+    resizeP1();
+  </script>
+</body>
+</html>

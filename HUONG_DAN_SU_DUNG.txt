@@ -1,0 +1,35 @@
+﻿========================================================================================
+HỆ THỐNG DẠY HỌC SỐ: TIẾP TUYẾN ĐƯỜNG TRÒN & BÀI TOÁN AN NINH BẢO TÀNG (TOÁN 9 - BÀI 16)
+Dự án Dạy học số kết hợp STEM - Chuẩn Công văn 5512/BGDĐT & Chương trình GDPT 2018
+========================================================================================
+
+CẤU TRÚC THƯ MỤC DỰ ÁN:
+----------------------------------------------------------------------------------------
+1. index.html
+   --> Phần mềm chính (Web App Dạy học số). Nhấp đúp chuột để mở và chạy trực tiếp
+       trên mọi trình duyệt (Chrome, Edge, Cốc Cốc, Firefox, Safari) mà KHÔNG CẦN INTERNET.
+
+2. Ho_So_Demo_Web_Day_Hoc_So_Toan9.docx
+   --> Bản Thuyết minh & Hồ sơ Demo sản phẩm định dạng Microsoft Word gửi Khách hàng/Hội đồng.
+       Đã nhúng sẵn toàn bộ 10 ảnh chụp màn hình độ nét cao, bảng ma trận năng lực và phân tích sư phạm.
+
+3. Tai_Lieu_Ho_So/
+   --> Chứa toàn bộ các văn bản Word chính thức của dự án:
+       + Ho_So_Demo_Web_Day_Hoc_So_Toan9.docx (Bản sao lưu trữ)
+       + Phan_1_Tong_Quan_Chu_De_Day_Hoc_So.docx (Bản tổng quan dự án)
+       + Phan_2_Ke_Hoach_Bai_Day_CV5512_Chu_De_Day_Hoc_So_CapNhat.docx (Giáo án 2 tiết chuẩn mẫu CV 5512)
+       + Ban_De_Xuat_Y_Tuong_Thi_STEM_Toan9.docx (Bản thuyết minh ý tưởng dự thi)
+
+4. Tai_Lieu_Tham_Khao/
+   --> Chứa các văn bản pháp lý, kế hoạch hội thi và sách giáo khoa:
+       + Kế hoạch Hội thi Dạy học số & STEM (Sở GD&ĐT)
+       + Phụ lục 4 Mẫu Kế hoạch bài dạy theo Công văn 5512/BGDĐT
+       + Sách Giáo Khoa Toán 9 (Tập 1 - Kết nối tri thức)
+
+5. Hinh_Anh_Minh_Hoa/
+   --> Chứa trọn bộ hình ảnh minh họa chất lượng cao từng phân hệ, sơ đồ hình học động,
+       ảnh phòng thí nghiệm an ninh quang học, slide thuyết trình phục vụ in ấn hoặc làm tư liệu.
+
+6. Cong_Cu_Phat_Trien/
+   --> Chứa các kịch bản kiểm thử thuật toán và công cụ hỗ trợ nhà phát triển.
+========================================================================================
